@@ -24,6 +24,7 @@ interface GameResult {
   timeSpent: number
   userId: string
   timestamp: any
+  difficulty: string
 }
 
 const saveGameResult = async (result: GameResult) => {
@@ -74,6 +75,8 @@ export function MarathonGame({
   const [gameOver, setGameOver] = useState(false)
   const [showResults, setShowResults] = useState(false)
   const [loading, setLoading] = useState(true)
+  const [startTime] = useState<number>(Date.now())
+  const [totalTimeSpent, setTotalTimeSpent] = useState(0)
 
   const currentQuestion = questions[currentQuestionIndex]
 
@@ -82,6 +85,15 @@ export function MarathonGame({
       setLoading(false)
     }
   }, [questions])
+
+  useEffect(() => {
+    if (!gameOver) {
+      const interval = setInterval(() => {
+        setTotalTimeSpent(Math.floor((Date.now() - startTime) / 1000))
+      }, 1000)
+      return () => clearInterval(interval)
+    }
+  }, [gameOver, startTime])
 
   useEffect(() => {
     if (!isAnswered && timeLeft > 0 && !gameOver) {
@@ -104,9 +116,9 @@ export function MarathonGame({
     if (isAnswered && !showResults) {
       const timer = setTimeout(() => {
         handleNextQuestion()
-      }, 2000) // Show answer for 2 seconds before moving to next question
+      }, 2000)
 
-      return () => clearInterval(timer)
+      return () => clearTimeout(timer)
     }
   }, [isAnswered, showResults])
 
@@ -140,20 +152,24 @@ export function MarathonGame({
       }
 
       const result = {
-        userId: auth.currentUser?.uid || '',
-        displayName: auth.currentUser?.displayName || 'Anonymous',
+        userId: user.uid,
+        displayName: user.displayName || 'Anonymous',
         score,
         streak,
         grade: settings.form,
         subject: settings.subject,
-        correctAnswers: score,
+        correctAnswers: score / 10, // Convert score to number of correct answers
         totalQuestions: questions.length,
-        timeSpent: 0, // TODO: Add timer implementation
+        timeSpent: totalTimeSpent,
+        difficulty: settings.difficulty,
         timestamp: null
       }
       
-      console.log('Saving game result:', result)
-      const docId = await saveGameResult(result)
+      const docId = await retryOperation(
+        async () => await saveGameResult(result),
+        3,
+        1000
+      )
       
       if (docId) {
         toast.success('Score saved to leaderboard! 🏆')
@@ -304,13 +320,31 @@ export function MarathonGame({
           
           <AnimatedContainer animation="slide" className="space-y-6 mb-8">
             <h2 className="game-heading text-4xl">Game Over!</h2>
-            <div className="game-score">{score}</div>
-            <div className="game-streak">
-              <span>Highest Streak</span>
-              <span className="game-streak-icon">{streak}🔥</span>
-            </div>
-            <div className="text-lg text-game-text-muted">
-              Questions: {currentQuestionIndex + 1}
+            <div className="game-stats grid gap-4">
+              <div className="stat-item">
+                <span className="stat-label">Final Score</span>
+                <span className="stat-value text-4xl font-bold text-game-accent">{score}</span>
+              </div>
+              <div className="stat-item">
+                <span className="stat-label">Highest Streak</span>
+                <span className="stat-value">{streak}🔥</span>
+              </div>
+              <div className="stat-item">
+                <span className="stat-label">Questions Completed</span>
+                <span className="stat-value">{currentQuestionIndex + 1} / {questions.length}</span>
+              </div>
+              <div className="stat-item">
+                <span className="stat-label">Time Spent</span>
+                <span className="stat-value">
+                  {Math.floor(totalTimeSpent / 60)}m {totalTimeSpent % 60}s
+                </span>
+              </div>
+              <div className="stat-item">
+                <span className="stat-label">Accuracy</span>
+                <span className="stat-value">
+                  {Math.round((score / ((currentQuestionIndex + 1) * 10)) * 100)}%
+                </span>
+              </div>
             </div>
           </AnimatedContainer>
 
@@ -338,9 +372,15 @@ export function MarathonGame({
           >
             <div className="flex items-center justify-between">
               <div className="space-y-2">
-                <p className="text-game-text-muted">
-                  Question {currentQuestionIndex + 1} of {questions.length}
-                </p>
+                <div className="flex items-center gap-4">
+                  <p className="text-game-text-muted">
+                    Question {currentQuestionIndex + 1} of {questions.length}
+                  </p>
+                  <div className="text-game-text-muted flex items-center gap-2">
+                    <Clock className="w-4 h-4" />
+                    {Math.floor(totalTimeSpent / 60)}:{(totalTimeSpent % 60).toString().padStart(2, '0')}
+                  </div>
+                </div>
                 <div className="game-progress">
                   <motion.div
                     className="game-progress-bar"

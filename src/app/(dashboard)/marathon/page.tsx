@@ -43,7 +43,8 @@ export default function MarathonPage() {
   const [settings, setSettings] = useState({
     subject: 'mathematics',
     form: 'form1',
-    difficulty: 'medium'
+    difficulty: 'medium',
+    questionsPerSession: 10
   })
 
   async function startGame() {
@@ -53,7 +54,7 @@ export default function MarathonPage() {
         settings.subject,
         settings.form,
         settings.difficulty,
-        10
+        settings.questionsPerSession
       )
 
       if (fetchedQuestions.length === 0) {
@@ -61,7 +62,7 @@ export default function MarathonPage() {
         return
       }
 
-      if (fetchedQuestions.length < 10) {
+      if (fetchedQuestions.length < settings.questionsPerSession) {
         toast.warning(`Only ${fetchedQuestions.length} questions available for the selected criteria.`)
       }
 
@@ -69,7 +70,7 @@ export default function MarathonPage() {
       setGameStarted(true)
     } catch (error) {
       console.error('Error fetching questions:', error)
-      toast.error('Failed to fetch questions. Please try again.')
+      toast.error('Failed to fetch questions. Please check your connection and try again.')
     } finally {
       setIsLoading(false)
     }
