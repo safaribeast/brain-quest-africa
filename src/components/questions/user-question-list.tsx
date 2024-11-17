@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { collection, query, getDocs, where, orderBy, limit, getDoc, doc } from 'firebase/firestore'
+import { collection, query, getDocs, where, orderBy, limit, getDoc, doc as firestoreDoc } from 'firebase/firestore'
 import { auth, db } from '@/lib/firebase'
 import { Question } from '@/types/question'
 import { QuestionCard } from './question-card'
@@ -49,14 +49,14 @@ export function UserQuestionList({ type }: UserQuestionListProps) {
 
         const querySnapshot = await getDocs(q)
         const loadedQuestions = await Promise.all(
-          querySnapshot.docs.map(async (doc) => {
+          querySnapshot.docs.map(async (snapshot) => {
             // Get the actual question data
-            const questionDoc = await getDoc(doc(db, 'questions', doc.data().questionId))
+            const questionDoc = await getDoc(firestoreDoc(db, 'questions', snapshot.data().questionId))
             return {
               id: questionDoc.id,
               ...questionDoc.data(),
-              attemptedAt: doc.data().attemptedAt?.toDate(),
-              isCorrect: doc.data().isCorrect,
+              attemptedAt: snapshot.data().attemptedAt?.toDate(),
+              isCorrect: snapshot.data().isCorrect,
             }
           })
         )
@@ -98,4 +98,4 @@ export function UserQuestionList({ type }: UserQuestionListProps) {
       ))}
     </div>
   )
-} 
+}
