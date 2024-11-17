@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { buttonVariants } from "@/components/ui/button";
-import { ArrowRight, BookOpen, Trophy, Brain, Sparkles, Github } from "lucide-react";
+import { ArrowRight, BookOpen, Brain, Sparkles, Github } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 
 export default function Home() {
@@ -22,12 +22,6 @@ export default function Home() {
               className="text-sm font-medium text-muted-foreground transition-colors hover:text-primary"
             >
               Features
-            </Link>
-            <Link
-              href="#pricing"
-              className="text-sm font-medium text-muted-foreground transition-colors hover:text-primary"
-            >
-              Pricing
             </Link>
           </div>
           <nav className="flex items-center space-x-4">
@@ -120,108 +114,12 @@ export default function Home() {
 
           <Card className="relative overflow-hidden border-primary/10 transition-colors hover:border-primary/30">
             <CardContent className="flex h-[180px] flex-col justify-between p-6">
-              <Trophy className="h-12 w-12 text-primary" />
+              <Sparkles className="h-12 w-12 text-primary" />
               <div className="space-y-2">
-                <h3 className="font-bold">Competitive Edge</h3>
+                <h3 className="font-bold">Progress Tracking</h3>
                 <p className="text-sm text-muted-foreground">
-                  Compete with peers and track your progress on our leaderboard
+                  Monitor your learning journey and track your improvement over time
                 </p>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-      </section>
-
-      {/* Pricing Section */}
-      <section className="container py-8 md:py-12 lg:py-24" id="pricing">
-        <div className="mx-auto flex max-w-[58rem] flex-col items-center space-y-4 text-center">
-          <div className="inline-flex items-center rounded-lg bg-yellow-100 dark:bg-yellow-900/30 px-3 py-1 text-sm font-medium text-yellow-800 dark:text-yellow-300 mb-4">
-            Payment System Coming Soon!
-          </div>
-          <h2 className="font-heading text-3xl leading-[1.1] sm:text-3xl md:text-6xl">
-            Simple Pricing
-          </h2>
-          <p className="max-w-[85%] leading-normal text-muted-foreground sm:text-lg sm:leading-7">
-            Choose the perfect plan for your learning journey
-          </p>
-        </div>
-        <div className="mx-auto grid max-w-5xl gap-6 py-8 lg:grid-cols-3">
-          {/* Free Plan */}
-          <Card className="relative overflow-hidden border-primary/10 transition-colors hover:border-primary/30">
-            <CardContent className="p-6">
-              <div className="flex flex-col gap-4">
-                <h3 className="text-xl font-bold">Free Plan</h3>
-                <p className="text-3xl font-bold">TZS 0</p>
-                <p className="text-sm text-muted-foreground">Perfect for trying out Brain Quest Africa</p>
-                <ul className="grid gap-3 text-sm text-muted-foreground">
-                  <li className="flex items-center">✓ Access to basic quizzes</li>
-                  <li className="flex items-center">✓ Limited topics</li>
-                  <li className="flex items-center">✓ Basic progress tracking</li>
-                </ul>
-                <Link
-                  href="/register"
-                  className={cn(
-                    buttonVariants({ variant: "outline" }),
-                    "mt-4 w-full"
-                  )}
-                >
-                  Get Started
-                </Link>
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* Premium Plan */}
-          <Card className="relative overflow-hidden border-primary transition-colors hover:border-primary">
-            <CardContent className="p-6">
-              <div className="flex flex-col gap-4">
-                <div className="inline-flex items-center rounded-lg bg-primary/10 px-3 py-1 text-sm font-medium text-primary">
-                  Popular
-                </div>
-                <h3 className="text-xl font-bold">Premium</h3>
-                <p className="text-3xl font-bold">TZS 25,000<span className="text-sm font-normal text-muted-foreground">/month</span></p>
-                <p className="text-sm text-muted-foreground">Everything you need to excel in your studies</p>
-                <ul className="grid gap-3 text-sm text-muted-foreground">
-                  <li className="flex items-center">✓ All Free Plan features</li>
-                  <li className="flex items-center">✓ Unlimited access to all quizzes</li>
-                  <li className="flex items-center">✓ Advanced progress tracking</li>
-                  <li className="flex items-center">✓ Personalized learning path</li>
-                </ul>
-                <Link
-                  href="/register"
-                  className={cn(
-                    buttonVariants(),
-                    "mt-4 w-full bg-gradient-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary"
-                  )}
-                >
-                  Get Premium
-                </Link>
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* School Plan */}
-          <Card className="relative overflow-hidden border-primary/10 transition-colors hover:border-primary/30">
-            <CardContent className="p-6">
-              <div className="flex flex-col gap-4">
-                <h3 className="text-xl font-bold">School Plan</h3>
-                <p className="text-3xl font-bold">Contact for Pricing</p>
-                <p className="text-sm text-muted-foreground">For schools and educational institutions</p>
-                <ul className="grid gap-3 text-sm text-muted-foreground">
-                  <li className="flex items-center">✓ All Premium features</li>
-                  <li className="flex items-center">✓ Bulk student accounts</li>
-                  <li className="flex items-center">✓ School dashboard</li>
-                  <li className="flex items-center">✓ Priority support</li>
-                </ul>
-                <Link
-                  href="/contact"
-                  className={cn(
-                    buttonVariants({ variant: "outline" }),
-                    "mt-4 w-full"
-                  )}
-                >
-                  Contact Sales
-                </Link>
               </div>
             </CardContent>
           </Card>
