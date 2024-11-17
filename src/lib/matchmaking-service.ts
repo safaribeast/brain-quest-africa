@@ -24,13 +24,14 @@ export class MatchmakingService {
   private userStatusRef: DatabaseReference | null = null
   private matchListener: (() => void) | null = null
   private isSearching: boolean = false
-  private queueRef: any
+  private queueRef: DatabaseReference | null = null
   private searchTimeout: NodeJS.Timeout | null = null
   private retryAttempts = 0
-  private MAX_RETRY_ATTEMPTS = 3
-  private SEARCH_TIMEOUT = 30000 // 30 seconds
+  private readonly MAX_RETRY_ATTEMPTS = 3
+  private readonly SEARCH_TIMEOUT = 30000 // 30 seconds
 
-  constructor() {
+  constructor(userId: string) {
+    this.userId = userId
     this.queueRef = ref(realtimeDb, 'matchmaking/queue')
   }
 
@@ -110,7 +111,7 @@ export class MatchmakingService {
       this.cancelSearch()
 
       // Add to queue
-      const userQueueRef = push(this.queueRef)
+      const userQueueRef = push(this.queueRef!)
       const queueEntry = {
         userId: user.uid,
         settings,
@@ -142,7 +143,7 @@ export class MatchmakingService {
 
     try {
       // Check for existing opponent
-      const snapshot = await get(this.queueRef)
+      const snapshot = await get(this.queueRef!)
       const queue = snapshot.val() || {}
 
       // Find opponent with matching settings
@@ -228,7 +229,7 @@ export class MatchmakingService {
     }
 
     // Remove from queue
-    get(this.queueRef).then(snapshot => {
+    get(this.queueRef!).then(snapshot => {
       const queue = snapshot.val() || {}
       const userEntry = Object.entries(queue).find(([_, entry]: [string, any]) => 
         entry.userId === auth.currentUser?.uid
