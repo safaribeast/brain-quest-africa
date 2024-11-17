@@ -165,20 +165,22 @@ export class MatchmakingService {
           status: 'countdown',
           players: {
             [user.uid]: {
+              id: user.uid,
               displayName: user.displayName || 'Anonymous',
               ready: false,
-              score: 0,
-              userId: user.uid
+              score: 0
             },
             [opponentData.userId]: {
+              id: opponentData.userId,
               displayName: opponentData.displayName || 'Anonymous',
               ready: false,
-              score: 0,
-              userId: opponentData.userId
+              score: 0
             }
           },
           settings,
-          countdownStartedAt: undefined
+          countdownStartedAt: undefined,
+          createdAt: new Date(),
+          updatedAt: new Date()
         }
 
         // Update match in database
