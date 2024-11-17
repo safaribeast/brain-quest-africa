@@ -79,7 +79,7 @@ export default function NewQuestionPage() {
       });
 
       await logActivity({
-        type: 'question_created',
+        type: 'question_added',
         description: 'Created a new question',
         userId: auth.currentUser?.uid || '',
         metadata: { questionId: docRef.id }

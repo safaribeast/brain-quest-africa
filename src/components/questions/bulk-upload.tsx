@@ -97,7 +97,7 @@ export function BulkQuestionUpload() {
     } catch (error) {
       setStatus((prev) => ({
         ...prev,
-        errors: [...prev.errors, `File processing error: ${error.message}`],
+        errors: [...prev.errors, `File processing error: ${error instanceof Error ? error.message : 'Unknown error'}`],
       }));
     } finally {
       setUploading(false);

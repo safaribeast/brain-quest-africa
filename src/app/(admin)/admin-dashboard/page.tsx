@@ -9,6 +9,7 @@ import { collection, getDocs, query, orderBy, limit } from 'firebase/firestore';
 import Link from 'next/link';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Question } from '@/types/question';
+import { LucideIcon } from 'lucide-react';
 
 interface DashboardStats {
   totalQuestions: number;
@@ -17,6 +18,14 @@ interface DashboardStats {
   draftQuestions: number;
   recentActivity: any[];
   loading: boolean;
+}
+
+interface StatCardProps {
+  icon: LucideIcon;
+  title: string;
+  value: number | string;
+  description?: string;
+  loading?: boolean;
 }
 
 export default function AdminDashboardPage() {
@@ -77,7 +86,13 @@ export default function AdminDashboardPage() {
     fetchStats();
   }, []);
 
-  const StatCard = ({ icon: Icon, title, value, description = '', loading }) => (
+  const StatCard = ({ 
+    icon: Icon, 
+    title, 
+    value, 
+    description = '', 
+    loading 
+  }: StatCardProps) => (
     <Card className="p-6">
       <div className="flex items-center gap-4">
         <div className="p-3 bg-primary/10 rounded-lg">

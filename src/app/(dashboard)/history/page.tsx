@@ -63,7 +63,7 @@ export default function HistoryPage() {
           practiceData = practiceSnapshot.docs.map(doc => ({
             id: doc.id,
             ...doc.data()
-          })) as QuestionAttempt[]
+          } as QuestionAttempt))
         } catch (indexError: any) {
           console.log('Index not ready yet, fetching all questions as fallback')
           // Fallback: fetch all recent questions and filter client-side
@@ -77,16 +77,16 @@ export default function HistoryPage() {
             .map(doc => ({
               id: doc.id,
               ...doc.data()
-            }))
+            } as QuestionAttempt))
             .filter(q => !q.isCorrect)
-            .slice(0, 20) as QuestionAttempt[]
+            .slice(0, 20)
         }
 
         const recentSnapshot = await getDocs(recentQ)
         const recentData = recentSnapshot.docs.map(doc => ({
           id: doc.id,
           ...doc.data()
-        })) as QuestionAttempt[]
+        } as QuestionAttempt))
 
         console.log('Recent questions:', recentData)
         console.log('Practice questions:', practiceData)

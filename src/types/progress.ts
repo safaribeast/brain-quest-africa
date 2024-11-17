@@ -1,11 +1,12 @@
 import { QuestionSubject, QuestionGrade, QuestionDifficulty } from './question'
+import { Timestamp } from 'firebase/firestore'
 
 export interface SubjectProgress {
   subject: QuestionSubject
   totalAttempts: number
   correctAnswers: number
   averageScore: number
-  lastAttempted: Date
+  lastAttempted: Timestamp
   byDifficulty: {
     [K in QuestionDifficulty]: number
   }
@@ -17,7 +18,9 @@ export interface UserProgress {
   totalCorrectAnswers: number
   overallAccuracy: number
   subjectProgress: Partial<Record<QuestionSubject, SubjectProgress>>
-  lastActive: Date
+  lastActive: Timestamp
   streak: number
-  updatedAt: Date
-} 
+  streakDays: number
+  lastPlayedAt: Timestamp
+  updatedAt: Timestamp
+}

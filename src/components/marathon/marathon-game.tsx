@@ -17,6 +17,28 @@ import {
   AnimatedButton
 } from './game-animations'
 
+interface GameResult {
+  score: number
+  correctAnswers: number
+  totalQuestions: number
+  timeSpent: number
+  userId: string
+  timestamp: any
+}
+
+const saveGameResult = async (result: GameResult) => {
+  try {
+    const docRef = await addDoc(collection(db, 'leaderboard'), {
+      ...result,
+      timestamp: serverTimestamp()
+    })
+    return docRef.id
+  } catch (error) {
+    console.error('Error saving game result:', error)
+    return null
+  }
+}
+
 interface MarathonGameProps {
   settings: {
     subject: string
@@ -118,12 +140,16 @@ export function MarathonGame({
       }
 
       const result = {
-        userId: user.uid,
-        displayName: user.displayName || 'Anonymous',
+        userId: auth.currentUser?.uid || '',
+        displayName: auth.currentUser?.displayName || 'Anonymous',
         score,
         streak,
         grade: settings.form,
-        subject: settings.subject
+        subject: settings.subject,
+        correctAnswers: score,
+        totalQuestions: questions.length,
+        timeSpent: 0, // TODO: Add timer implementation
+        timestamp: null
       }
       
       console.log('Saving game result:', result)
