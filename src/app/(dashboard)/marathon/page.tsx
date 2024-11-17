@@ -43,8 +43,7 @@ export default function MarathonPage() {
   const [settings, setSettings] = useState({
     subject: 'mathematics',
     form: 'form1',
-    difficulty: 'medium',
-    questionsPerSession: 10
+    difficulty: 'medium'
   })
 
   async function startGame() {
@@ -54,7 +53,7 @@ export default function MarathonPage() {
         settings.subject,
         settings.form,
         settings.difficulty,
-        settings.questionsPerSession
+        10
       )
 
       if (fetchedQuestions.length === 0) {
@@ -62,7 +61,7 @@ export default function MarathonPage() {
         return
       }
 
-      if (fetchedQuestions.length < settings.questionsPerSession) {
+      if (fetchedQuestions.length < 10) {
         toast.warning(`Only ${fetchedQuestions.length} questions available for the selected criteria.`)
       }
 

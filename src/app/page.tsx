@@ -71,7 +71,7 @@ export default function Home() {
                 "bg-gradient-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary"
               )}
             >
-              Start Learning <ArrowRight className="ml-2 h-4 w-4" />
+              Start Marathon <ArrowRight className="ml-2 h-4 w-4" />
             </Link>
           </div>
         </div>
