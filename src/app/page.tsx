@@ -1,100 +1,282 @@
-import Image from "next/image";
+import Link from "next/link";
+import { cn } from "@/lib/utils";
+import { buttonVariants } from "@/components/ui/button";
+import { ArrowRight, BookOpen, Trophy, Brain, Sparkles, Github } from "lucide-react";
+import { Card, CardContent } from "@/components/ui/card";
 
 export default function Home() {
   return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="https://nextjs.org/icons/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-semibold">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
-
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="https://nextjs.org/icons/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+    <div className="flex min-h-screen flex-col">
+      {/* Navbar */}
+      <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+        <div className="container flex h-14 items-center justify-between">
+          <div className="flex items-center space-x-4">
+            <Link href="/" className="flex items-center space-x-2">
+              <span className="font-bold">Brain Quest Africa</span>
+            </Link>
+          </div>
+          {/* Middle Navigation */}
+          <div className="hidden md:flex md:items-center md:space-x-6">
+            <Link
+              href="#features"
+              className="text-sm font-medium text-muted-foreground transition-colors hover:text-primary"
+            >
+              Features
+            </Link>
+            <Link
+              href="#pricing"
+              className="text-sm font-medium text-muted-foreground transition-colors hover:text-primary"
+            >
+              Pricing
+            </Link>
+          </div>
+          <nav className="flex items-center space-x-4">
+            <Link
+              href="/login"
+              className={cn(
+                buttonVariants({ variant: "ghost", size: "sm" }),
+                "text-foreground"
+              )}
+            >
+              Login
+            </Link>
+            <Link
+              href="/register"
+              className={cn(
+                buttonVariants({ size: "sm" }),
+                "bg-gradient-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary"
+              )}
+            >
+              Get Started
+            </Link>
+          </nav>
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
+      </header>
+
+      {/* Hero Section */}
+      <section className="space-y-6 pb-8 pt-6 md:pb-12 md:pt-10 lg:py-32">
+        <div className="container flex max-w-[64rem] flex-col items-center gap-4 text-center">
+          <div className="inline-flex items-center rounded-lg bg-muted px-3 py-1 text-sm font-medium">
+            🌍 Welcome to the future of African education
+          </div>
+          <h1 className="font-heading text-3xl sm:text-5xl md:text-6xl lg:text-7xl">
+            Brain Quest{" "}
+            <span className="bg-gradient-to-r from-primary to-primary/50 bg-clip-text text-transparent">
+              Africa
+            </span>
+          </h1>
+          <p className="max-w-[42rem] leading-normal text-muted-foreground sm:text-xl sm:leading-8">
+            Embark on an educational journey through Africa. Test your knowledge, learn fascinating facts, 
+            and challenge yourself with our engaging quiz platform designed for African students.
+          </p>
+          <div>
+            <Link 
+              href="/marathon" 
+              className={cn(
+                buttonVariants({ size: "lg" }),
+                "bg-gradient-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary"
+              )}
+            >
+              Start Learning <ArrowRight className="ml-2 h-4 w-4" />
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* Features Section */}
+      <section className="container space-y-6 py-8 md:py-12 lg:py-24" id="features">
+        <div className="mx-auto flex max-w-[58rem] flex-col items-center space-y-4 text-center">
+          <h2 className="font-heading text-3xl leading-[1.1] sm:text-3xl md:text-6xl">
+            Features
+          </h2>
+          <p className="max-w-[85%] leading-normal text-muted-foreground sm:text-lg sm:leading-7">
+            Discover why students across Africa choose Brain Quest Africa for their learning journey
+          </p>
+        </div>
+        <div className="mx-auto grid justify-center gap-4 sm:grid-cols-2 md:max-w-[64rem] md:grid-cols-3">
+          <Card className="relative overflow-hidden border-primary/10 transition-colors hover:border-primary/30">
+            <CardContent className="flex h-[180px] flex-col justify-between p-6">
+              <BookOpen className="h-12 w-12 text-primary" />
+              <div className="space-y-2">
+                <h3 className="font-bold">Interactive Learning</h3>
+                <p className="text-sm text-muted-foreground">
+                  Engage with dynamic quizzes and challenges that make learning fun and effective
+                </p>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card className="relative overflow-hidden border-primary/10 transition-colors hover:border-primary/30">
+            <CardContent className="flex h-[180px] flex-col justify-between p-6">
+              <Brain className="h-12 w-12 text-primary" />
+              <div className="space-y-2">
+                <h3 className="font-bold">African Context</h3>
+                <p className="text-sm text-muted-foreground">
+                  Content tailored specifically for African students and curriculum
+                </p>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card className="relative overflow-hidden border-primary/10 transition-colors hover:border-primary/30">
+            <CardContent className="flex h-[180px] flex-col justify-between p-6">
+              <Trophy className="h-12 w-12 text-primary" />
+              <div className="space-y-2">
+                <h3 className="font-bold">Competitive Edge</h3>
+                <p className="text-sm text-muted-foreground">
+                  Compete with peers and track your progress on our leaderboard
+                </p>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      </section>
+
+      {/* Pricing Section */}
+      <section className="container py-8 md:py-12 lg:py-24" id="pricing">
+        <div className="mx-auto flex max-w-[58rem] flex-col items-center space-y-4 text-center">
+          <div className="inline-flex items-center rounded-lg bg-yellow-100 dark:bg-yellow-900/30 px-3 py-1 text-sm font-medium text-yellow-800 dark:text-yellow-300 mb-4">
+            Payment System Coming Soon!
+          </div>
+          <h2 className="font-heading text-3xl leading-[1.1] sm:text-3xl md:text-6xl">
+            Simple Pricing
+          </h2>
+          <p className="max-w-[85%] leading-normal text-muted-foreground sm:text-lg sm:leading-7">
+            Choose the perfect plan for your learning journey
+          </p>
+        </div>
+        <div className="mx-auto grid max-w-5xl gap-6 py-8 lg:grid-cols-3">
+          {/* Free Plan */}
+          <Card className="relative overflow-hidden border-primary/10 transition-colors hover:border-primary/30">
+            <CardContent className="p-6">
+              <div className="flex flex-col gap-4">
+                <h3 className="text-xl font-bold">Free Plan</h3>
+                <p className="text-3xl font-bold">TZS 0</p>
+                <p className="text-sm text-muted-foreground">Perfect for trying out Brain Quest Africa</p>
+                <ul className="grid gap-3 text-sm text-muted-foreground">
+                  <li className="flex items-center">✓ Access to basic quizzes</li>
+                  <li className="flex items-center">✓ Limited topics</li>
+                  <li className="flex items-center">✓ Basic progress tracking</li>
+                </ul>
+                <Link
+                  href="/register"
+                  className={cn(
+                    buttonVariants({ variant: "outline" }),
+                    "mt-4 w-full"
+                  )}
+                >
+                  Get Started
+                </Link>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Premium Plan */}
+          <Card className="relative overflow-hidden border-primary transition-colors hover:border-primary">
+            <CardContent className="p-6">
+              <div className="flex flex-col gap-4">
+                <div className="inline-flex items-center rounded-lg bg-primary/10 px-3 py-1 text-sm font-medium text-primary">
+                  Popular
+                </div>
+                <h3 className="text-xl font-bold">Premium</h3>
+                <p className="text-3xl font-bold">TZS 25,000<span className="text-sm font-normal text-muted-foreground">/month</span></p>
+                <p className="text-sm text-muted-foreground">Everything you need to excel in your studies</p>
+                <ul className="grid gap-3 text-sm text-muted-foreground">
+                  <li className="flex items-center">✓ All Free Plan features</li>
+                  <li className="flex items-center">✓ Unlimited access to all quizzes</li>
+                  <li className="flex items-center">✓ Advanced progress tracking</li>
+                  <li className="flex items-center">✓ Personalized learning path</li>
+                </ul>
+                <Link
+                  href="/register"
+                  className={cn(
+                    buttonVariants(),
+                    "mt-4 w-full bg-gradient-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary"
+                  )}
+                >
+                  Get Premium
+                </Link>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* School Plan */}
+          <Card className="relative overflow-hidden border-primary/10 transition-colors hover:border-primary/30">
+            <CardContent className="p-6">
+              <div className="flex flex-col gap-4">
+                <h3 className="text-xl font-bold">School Plan</h3>
+                <p className="text-3xl font-bold">Contact for Pricing</p>
+                <p className="text-sm text-muted-foreground">For schools and educational institutions</p>
+                <ul className="grid gap-3 text-sm text-muted-foreground">
+                  <li className="flex items-center">✓ All Premium features</li>
+                  <li className="flex items-center">✓ Bulk student accounts</li>
+                  <li className="flex items-center">✓ School dashboard</li>
+                  <li className="flex items-center">✓ Priority support</li>
+                </ul>
+                <Link
+                  href="/contact"
+                  className={cn(
+                    buttonVariants({ variant: "outline" }),
+                    "mt-4 w-full"
+                  )}
+                >
+                  Contact Sales
+                </Link>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      </section>
+
+      {/* CTA Section */}
+      <section className="container py-8 md:py-12 lg:py-24">
+        <Card className="relative overflow-hidden border-primary/10">
+          <CardContent className="flex flex-col items-center justify-center space-y-4 p-6 text-center md:p-8">
+            <div className="rounded-full bg-primary/10 p-3">
+              <Sparkles className="h-12 w-12 text-primary" />
+            </div>
+            <h2 className="font-heading text-2xl leading-[1.1] sm:text-3xl md:text-4xl">
+              Ready to Start Your Journey?
+            </h2>
+            <p className="max-w-[85%] leading-normal text-muted-foreground sm:text-lg sm:leading-7">
+              Join thousands of students across Africa who are already improving their knowledge with Brain Quest Africa.
+            </p>
+            <Link
+              href="/register"
+              className={cn(
+                buttonVariants({ size: "lg" }),
+                "bg-gradient-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary"
+              )}
+            >
+              Get Started Now <ArrowRight className="ml-2 h-4 w-4" />
+            </Link>
+          </CardContent>
+        </Card>
+      </section>
+
+      {/* Footer */}
+      <footer className="border-t bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+        <div className="container flex flex-col items-center justify-between gap-4 py-10 md:h-24 md:flex-row md:py-0">
+          <div className="flex flex-col items-center gap-4 px-8 md:flex-row md:gap-2 md:px-0">
+            <p className="text-center text-sm leading-loose text-muted-foreground md:text-left">
+              Built with ❤️ for African students. 2024 Brain Quest Africa. All rights reserved.
+            </p>
+          </div>
+          <div className="flex items-center space-x-4">
+            <Link
+              href="https://github.com/yourusername/brain-quest-africa"
+              target="_blank"
+              rel="noreferrer"
+              className={cn(
+                buttonVariants({ variant: "ghost", size: "icon" }),
+                "text-muted-foreground hover:text-foreground"
+              )}
+            >
+              <Github className="h-4 w-4" />
+              <span className="sr-only">GitHub</span>
+            </Link>
+          </div>
+        </div>
       </footer>
     </div>
   );
