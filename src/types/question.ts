@@ -14,6 +14,8 @@ export type QuestionSubject =
 
 export type QuestionGrade = 'form1' | 'form2' | 'form3' | 'form4'
 
+export type QuestionStatus = 'active' | 'draft' | 'archived'
+
 export interface Question {
   id: string
   text: string
@@ -23,6 +25,7 @@ export interface Question {
   subject: QuestionSubject
   grade: QuestionGrade
   difficulty: QuestionDifficulty
+  status: QuestionStatus
   createdAt: Date
   updatedAt: Date
   attemptedAt?: Date
@@ -35,4 +38,4 @@ export interface QuestionBank {
       [difficulty: string]: Question[]
     }
   }
-} 
+}

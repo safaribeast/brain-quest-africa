@@ -5,9 +5,10 @@ import { Button } from '@/components/ui/button';
 import { Activity, Users, BookOpen, Award, FileSpreadsheet, TrendingUp } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { db } from '@/lib/firebase/config';
-import { collection, getDocs, query, where, orderBy, limit, Timestamp } from 'firebase/firestore';
+import { collection, getDocs, query, orderBy, limit } from 'firebase/firestore';
 import Link from 'next/link';
 import { Skeleton } from '@/components/ui/skeleton';
+import { Question } from '@/types/question';
 
 interface DashboardStats {
   totalQuestions: number;
@@ -34,7 +35,10 @@ export default function AdminDashboardPage() {
         // Fetch questions stats
         const questionsRef = collection(db, 'questions');
         const questionsSnap = await getDocs(questionsRef);
-        const questions = questionsSnap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        const questions = questionsSnap.docs.map(doc => ({ 
+          id: doc.id, 
+          ...doc.data()
+        } as Question));
         
         const activeQuestions = questions.filter(q => q.status === 'active').length;
         const draftQuestions = questions.filter(q => q.status === 'draft').length;
