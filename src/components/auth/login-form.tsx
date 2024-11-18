@@ -44,7 +44,9 @@ export function LoginForm() {
     try {
       setIsLoading(true)
       setError("")
+      console.log("Attempting login with:", { email: values.email })
       await signInWithEmailAndPassword(auth, values.email, values.password)
+      console.log("Login successful")
       router.push(from)
     } catch (error: any) {
       console.error("Login error:", error)
@@ -52,6 +54,12 @@ export function LoginForm() {
         setError('Invalid email or password')
       } else if (error.code === 'auth/too-many-requests') {
         setError('Too many failed attempts. Please try again later')
+      } else if (error.code === 'auth/api-key-not-valid') {
+        setError('Authentication service is temporarily unavailable. Please try again later.')
+        console.error('Firebase API Key error. Please check Firebase configuration.')
+      } else if (error.code === 'auth/invalid-api-key') {
+        setError('Authentication service configuration error. Please contact support.')
+        console.error('Invalid Firebase API Key. Please check Firebase configuration.')
       } else {
         setError(error.message || 'Failed to sign in')
       }
@@ -65,7 +73,9 @@ export function LoginForm() {
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
           {error && (
-            <div className="p-3 text-sm text-red-500 bg-red-50 rounded-md">{error}</div>
+            <div className="p-3 text-sm text-red-500 bg-red-50 rounded-md border border-red-100">
+              {error}
+            </div>
           )}
           <FormField
             control={form.control}
@@ -79,6 +89,7 @@ export function LoginForm() {
                     className="h-11" 
                     {...field} 
                     disabled={isLoading}
+                    autoComplete="email"
                   />
                 </FormControl>
                 <FormMessage />
@@ -97,6 +108,7 @@ export function LoginForm() {
                     className="h-11"
                     {...field} 
                     disabled={isLoading}
+                    autoComplete="current-password"
                   />
                 </FormControl>
                 <FormMessage />
