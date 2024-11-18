@@ -1,6 +1,7 @@
 import { db } from '@/lib/firebase';
 import {
   collection,
+  doc,
   addDoc,
   getDocs,
   query,
@@ -96,17 +97,17 @@ export async function searchQuestions(searchTerm: string): Promise<Question[]> {
   const querySnapshot = await getDocs(questionsRef);
 
   const searchTermLower = searchTerm.toLowerCase();
-  return querySnapshot.docs
-    .map((doc) => ({
-      id: doc.id,
-      ...doc.data(),
-    }))
-    .filter((question: Question) => {
-      return (
-        question.question.toLowerCase().includes(searchTermLower) ||
-        question.subject.toLowerCase().includes(searchTermLower) ||
-        question.topic.toLowerCase().includes(searchTermLower) ||
-        question.tags.some((tag) => tag.toLowerCase().includes(searchTermLower))
-      );
-    }) as Question[];
+  const questions = querySnapshot.docs.map((doc) => ({
+    id: doc.id,
+    ...doc.data(),
+  })) as Question[];
+
+  return questions.filter((question) => {
+    return (
+      question.question.toLowerCase().includes(searchTermLower) ||
+      question.subject.toLowerCase().includes(searchTermLower) ||
+      question.topic.toLowerCase().includes(searchTermLower) ||
+      question.tags.some((tag) => tag.toLowerCase().includes(searchTermLower))
+    );
+  });
 }

@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Progress } from '@/components/ui/progress'
@@ -95,51 +95,7 @@ export function MarathonGame({
     }
   }, [gameOver, startTime])
 
-  useEffect(() => {
-    if (!isAnswered && timeLeft > 0 && !gameOver) {
-      const timer = setInterval(() => {
-        setTimeLeft((prev) => {
-          if (prev <= 1) {
-            handleAnswerTimeout()
-            clearInterval(timer)
-            return 0
-          }
-          return prev - 1
-        })
-      }, 1000)
-
-      return () => clearInterval(timer)
-    }
-  }, [isAnswered, timeLeft, gameOver])
-
-  useEffect(() => {
-    if (isAnswered && !showResults) {
-      const timer = setTimeout(() => {
-        handleNextQuestion()
-      }, 2000)
-
-      return () => clearTimeout(timer)
-    }
-  }, [isAnswered, showResults])
-
-  const progress = ((currentQuestionIndex + 1) / questions.length) * 100
-
-  function handleAnswerTimeout() {
-    setIsAnswered(true)
-    setIsCorrect(false)
-    setStreak(0)
-    handleWrongAnswer()
-  }
-
-  function handleWrongAnswer() {
-    const newLives = lives - 1
-    setLives(newLives)
-    if (newLives === 0) {
-      handleGameOver()
-    }
-  }
-
-  async function handleGameOver() {
+  const handleGameOver = useCallback(async () => {
     setGameOver(true)
     setShowResults(true)
 
@@ -158,7 +114,7 @@ export function MarathonGame({
         streak,
         grade: settings.form,
         subject: settings.subject,
-        correctAnswers: score / 10, // Convert score to number of correct answers
+        correctAnswers: score / 10,
         totalQuestions: questions.length,
         timeSpent: totalTimeSpent,
         difficulty: settings.difficulty,
@@ -181,35 +137,37 @@ export function MarathonGame({
       console.error('Error saving game result:', error)
       toast.error('Failed to save score. Please try again.')
     }
-  }
+  }, [score, streak, settings, questions.length, totalTimeSpent])
 
-  async function retryOperation<T>(
-    operation: () => Promise<T>,
-    maxAttempts: number = 3,
-    delayMs: number = 1000
-  ): Promise<T> {
-    let lastError: any
-    
-    for (let attempt = 1; attempt <= maxAttempts; attempt++) {
-      try {
-        return await operation()
-      } catch (error: any) {
-        lastError = error
-        console.error(`Attempt ${attempt}/${maxAttempts} failed:`, error)
-        
-        if (attempt === maxAttempts) {
-          throw error
-        }
-        
-        // Wait before retrying
-        await new Promise(resolve => setTimeout(resolve, delayMs * attempt))
-      }
+  const handleNextQuestion = useCallback(() => {
+    if (currentQuestionIndex === questions.length - 1 || gameOver) {
+      handleGameOver()
+      return
     }
-    
-    throw lastError
-  }
 
-  const handleAnswer = async (selectedAnswer: string) => {
+    setCurrentQuestionIndex((prev) => prev + 1)
+    setSelectedAnswer(null)
+    setIsAnswered(false)
+    setTimeLeft(30)
+    setIsCorrect(null)
+  }, [currentQuestionIndex, questions.length, gameOver, handleGameOver])
+
+  const handleWrongAnswer = useCallback(() => {
+    const newLives = lives - 1
+    setLives(newLives)
+    if (newLives === 0) {
+      handleGameOver()
+    }
+  }, [lives, handleGameOver])
+
+  const handleAnswerTimeout = useCallback(() => {
+    setIsAnswered(true)
+    setIsCorrect(false)
+    setStreak(0)
+    handleWrongAnswer()
+  }, [handleWrongAnswer])
+
+  const handleAnswer = useCallback(async (selectedAnswer: string) => {
     if (currentQuestion && !isAnswered) {
       const isCorrect = selectedAnswer === currentQuestion.correctAnswer
       setIsAnswered(true)
@@ -262,20 +220,62 @@ export function MarathonGame({
         }
       }, 1500)
     }
-  }
+  }, [currentQuestion, isAnswered, handleNextQuestion, handleGameOver])
 
-  function handleNextQuestion() {
-    if (currentQuestionIndex === questions.length - 1 || gameOver) {
-      handleGameOver()
-      return
+  useEffect(() => {
+    if (!isAnswered && timeLeft > 0 && !gameOver) {
+      const timer = setInterval(() => {
+        setTimeLeft((prev) => {
+          if (prev <= 1) {
+            handleAnswerTimeout()
+            clearInterval(timer)
+            return 0
+          }
+          return prev - 1
+        })
+      }, 1000)
+
+      return () => clearInterval(timer)
     }
+  }, [isAnswered, timeLeft, gameOver, handleAnswerTimeout])
 
-    setCurrentQuestionIndex((prev) => prev + 1)
-    setSelectedAnswer(null)
-    setIsAnswered(false)
-    setTimeLeft(30)
-    setIsCorrect(null)
+  useEffect(() => {
+    if (isAnswered && !showResults) {
+      const timer = setTimeout(() => {
+        handleNextQuestion()
+      }, 2000)
+
+      return () => clearTimeout(timer)
+    }
+  }, [isAnswered, showResults, handleNextQuestion])
+
+  async function retryOperation<T>(
+    operation: () => Promise<T>,
+    maxAttempts: number = 3,
+    delayMs: number = 1000
+  ): Promise<T> {
+    let lastError: any
+    
+    for (let attempt = 1; attempt <= maxAttempts; attempt++) {
+      try {
+        return await operation()
+      } catch (error: any) {
+        lastError = error
+        console.error(`Attempt ${attempt}/${maxAttempts} failed:`, error)
+        
+        if (attempt === maxAttempts) {
+          throw error
+        }
+        
+        // Wait before retrying
+        await new Promise(resolve => setTimeout(resolve, delayMs * attempt))
+      }
+    }
+    
+    throw lastError
   }
+
+  const progress = ((currentQuestionIndex + 1) / questions.length) * 100
 
   if (loading) {
     return (
