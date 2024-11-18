@@ -1,17 +1,23 @@
 'use client'
 
+import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { signInWithPopup, GoogleAuthProvider } from "firebase/auth"
-import { auth, db } from "@/lib/firebase"
+import { auth } from "@/lib/firebase/auth"
+import { db } from "@/lib/firebase/config"
 import { doc, getDoc, setDoc } from "firebase/firestore"
 import { useRouter } from "next/navigation"
 
 export function GoogleSignInButton() {
   const router = useRouter()
+  const [isLoading, setIsLoading] = useState(false)
+  const [error, setError] = useState("")
   const provider = new GoogleAuthProvider()
 
   const signInWithGoogle = async () => {
     try {
+      setIsLoading(true)
+      setError("")
       const result = await signInWithPopup(auth, provider)
       const user = result.user
 
@@ -35,19 +41,26 @@ export function GoogleSignInButton() {
       }
 
       router.push("/dashboard")
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error signing in with Google:", error)
+      setError(error.message || "Failed to sign in with Google")
+    } finally {
+      setIsLoading(false)
     }
   }
 
   return (
-    <Button 
-      variant="outline" 
-      type="button" 
-      onClick={signInWithGoogle}
-      className="w-full h-11 border border-[#D1D5DB] hover:bg-gray-50"
-    >
-      Continue with Google
-    </Button>
+    <div className="w-full space-y-2">
+      <Button 
+        variant="outline" 
+        type="button" 
+        onClick={signInWithGoogle}
+        disabled={isLoading}
+        className="w-full h-11 border border-[#D1D5DB] hover:bg-gray-50"
+      >
+        {isLoading ? "Signing in..." : "Continue with Google"}
+      </Button>
+      {error && <p className="text-sm text-red-500">{error}</p>}
+    </div>
   )
-} 
+}
