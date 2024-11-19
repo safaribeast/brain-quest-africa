@@ -6,6 +6,7 @@ import { useEffect, useState } from 'react'
 import { auth } from '@/lib/firebase/auth'
 import { isAdminEmail } from '@/lib/admin-config'
 import { onAuthStateChanged } from 'firebase/auth'
+import { useRouter } from 'next/navigation'
 
 export default function AdminLayout({
   children,
@@ -14,6 +15,7 @@ export default function AdminLayout({
 }) {
   const [isLoading, setIsLoading] = useState(true)
   const [isAdmin, setIsAdmin] = useState(false)
+  const router = useRouter()
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
@@ -24,12 +26,12 @@ export default function AdminLayout({
       setIsLoading(false)
       
       if (!hasAdminAccess) {
-        redirect('/dashboard')
+        router.push('/dashboard')
       }
     })
 
     return () => unsubscribe()
-  }, [])
+  }, [router])
 
   if (isLoading) {
     return (
