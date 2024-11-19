@@ -9,7 +9,7 @@ import { QuestionList } from "@/components/questions/question-list"
 import { QuestionForm } from "@/components/questions/question-form"
 import { useRouter } from 'next/navigation'
 import { auth } from '@/lib/firebase/auth'
-import { checkAdminAccess } from '@/lib/admin-config'
+import { checkAdminAccess } from '@/lib/session'
 import { onAuthStateChanged } from 'firebase/auth'
 
 export function AdminPortal({ onClose }: { onClose: () => void }) {
