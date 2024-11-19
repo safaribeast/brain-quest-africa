@@ -9,7 +9,7 @@ import { X, Plus } from 'lucide-react'
 import { QuestionList } from "@/components/questions/question-list"
 import { useRouter } from 'next/navigation'
 import { auth } from '@/lib/firebase/auth'
-import { isAdminEmail } from '@/lib/config/admin'
+import { isAdminEmail } from '@/lib/admin-config'
 
 export function AdminPortal({ onClose }: { onClose: () => void }) {
   const [activeTab, setActiveTab] = useState("questions")
