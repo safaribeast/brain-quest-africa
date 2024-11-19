@@ -1,15 +1,17 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
+import { Dialog, DialogContent } from "@/components/ui/dialog"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { QuestionForm } from "@/components/questions/question-form"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Label } from "@/components/ui/label"
 import { Button } from "@/components/ui/button"
 import { X, Plus } from 'lucide-react'
 import { QuestionList } from "@/components/questions/question-list"
 import { useRouter } from 'next/navigation'
-import { auth, onAuthStateChanged } from '@/lib/firebase/auth'
+import { auth } from '@/lib/firebase/auth'
 import { isAdminEmail } from '@/lib/admin-config'
+import { onAuthStateChanged } from 'firebase/auth'
 
 export function AdminPortal({ onClose }: { onClose: () => void }) {
   const [activeTab, setActiveTab] = useState("questions")
