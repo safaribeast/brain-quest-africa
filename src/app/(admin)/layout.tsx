@@ -13,20 +13,37 @@ export default function AdminLayout({
   children: React.ReactNode
 }) {
   const [isLoading, setIsLoading] = useState(true)
+  const [isAdmin, setIsAdmin] = useState(false)
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
-      if (!user || !isAdminEmail(user.email)) {
+      console.log('Current user:', user?.email) 
+      const hasAdminAccess = user && isAdminEmail(user.email)
+      console.log('Has admin access:', hasAdminAccess) 
+      setIsAdmin(hasAdminAccess || false)
+      setIsLoading(false)
+      
+      if (!hasAdminAccess) {
         redirect('/dashboard')
       }
-      setIsLoading(false)
     })
 
     return () => unsubscribe()
   }, [])
 
   if (isLoading) {
-    return <div className="flex h-screen items-center justify-center">Loading...</div>
+    return (
+      <div className="flex h-screen items-center justify-center">
+        <div className="text-center">
+          <h2 className="text-2xl font-semibold mb-2">Loading...</h2>
+          <p className="text-muted-foreground">Please wait while we verify your access.</p>
+        </div>
+      </div>
+    )
+  }
+
+  if (!isAdmin) {
+    return null 
   }
 
   return (

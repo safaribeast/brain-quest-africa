@@ -19,7 +19,11 @@ export function AdminPortal({ onClose }: { onClose: () => void }) {
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
-      if (isAdminEmail(user?.email)) {
+      console.log('Admin portal - Current user:', user?.email)
+      const hasAdminAccess = user && isAdminEmail(user.email)
+      console.log('Admin portal - Has admin access:', hasAdminAccess)
+
+      if (hasAdminAccess) {
         router.push('/admin-dashboard/questions')
       } else {
         router.push('/dashboard')

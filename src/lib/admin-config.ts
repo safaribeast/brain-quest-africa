@@ -3,9 +3,9 @@ export const ADMIN_EMAILS = [
   'muhsinadam38@gmail.com',
   'charlesnyerere17@gmail.com',
   'rahimmnaro@gmail.com'
-] as const;
+];
 
 export function isAdminEmail(email: string | null | undefined): boolean {
   if (!email) return false;
-  return ADMIN_EMAILS.includes(email as any);
+  return ADMIN_EMAILS.some(adminEmail => adminEmail.toLowerCase() === email.toLowerCase());
 }
