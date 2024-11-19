@@ -1,5 +1,5 @@
-const { getAuth, createUserWithEmailAndPassword } = require('firebase/auth');
-const { firebaseApp } = require('./config');
+import { getAuth, createUserWithEmailAndPassword } from 'firebase/auth';
+import { firebaseApp } from './config';
 
 const auth = getAuth(firebaseApp);
 
@@ -22,7 +22,7 @@ async function createUniversalAdmin() {
   }
 }
 
-module.exports = {
+export {
   auth,
   createUniversalAdmin
 };
