@@ -4,7 +4,7 @@ import { redirect } from 'next/navigation'
 import { AdminSidebar } from '@/components/admin/sidebar'
 import { useEffect, useState } from 'react'
 import { auth } from '@/lib/firebase/auth'
-import { checkAdminAccess } from '@/lib/session'
+import { isAdminEmail } from '@/lib/admin-config'
 import { onAuthStateChanged } from 'firebase/auth'
 
 export default function AdminLayout({
@@ -18,7 +18,7 @@ export default function AdminLayout({
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       console.log('Current user:', user?.email) // Debug log
-      const hasAdminAccess = checkAdminAccess(user?.email)
+      const hasAdminAccess = isAdminEmail(user?.email)
       console.log('Has admin access:', hasAdminAccess) // Debug log
       setIsAdmin(hasAdminAccess)
       setIsLoading(false)

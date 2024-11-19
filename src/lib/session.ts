@@ -24,16 +24,3 @@ export async function getCurrentUser(): Promise<User | null> {
     });
   });
 }
-
-// Helper function to check admin status
-export function checkAdminAccess(email: string | null | undefined): boolean {
-  if (!email) return false;
-  
-  // Convert email to lowercase for case-insensitive comparison
-  const normalizedEmail = email.toLowerCase();
-  
-  // Quick access for development (you can remove this in production)
-  if (normalizedEmail === 'admin@brainquest.africa') return true;
-  
-  return isAdminEmail(email);
-}
