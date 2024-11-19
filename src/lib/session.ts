@@ -9,7 +9,9 @@ export interface User {
 // List of admin email addresses
 const ADMIN_EMAILS = [
   'safaribeast01@gmail.com',
-  // Add other admin emails here
+  'muhsinadam38@gmail.com',
+  'charlesnyerere17@gmail.com',
+  'rahimmnaro@gmail.com'
 ];
 
 export async function getCurrentUser(): Promise<User | null> {
