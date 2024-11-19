@@ -1,4 +1,4 @@
-import { initializeApp, getApps } from 'firebase/app';
+import { initializeApp, getApps, FirebaseApp } from 'firebase/app';
 import { getFirestore } from 'firebase/firestore';
 
 // Validate required environment variables
@@ -39,7 +39,7 @@ console.log('Firebase initialization with config:', {
 });
 
 // Initialize Firebase
-let firebaseApp;
+let firebaseApp: FirebaseApp;
 try {
   firebaseApp = getApps().length === 0 ? initializeApp(firebaseConfig) : getApps()[0];
   console.log('Firebase initialized successfully');
