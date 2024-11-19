@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button"
 import { X, Plus } from 'lucide-react'
 import { QuestionList } from "@/components/questions/question-list"
 import { useRouter } from 'next/navigation'
-import { auth } from '@/lib/firebase/auth'
+import { auth, onAuthStateChanged } from '@/lib/firebase/auth'
 import { isAdminEmail } from '@/lib/admin-config'
 
 export function AdminPortal({ onClose }: { onClose: () => void }) {
@@ -17,14 +17,16 @@ export function AdminPortal({ onClose }: { onClose: () => void }) {
   const router = useRouter()
 
   useEffect(() => {
-    // Check if the current user is the admin
-    const user = auth.currentUser
-    if (isAdminEmail(user?.email)) {
-      router.push('/admin-dashboard/questions')
-    } else {
-      router.push('/dashboard')
-    }
-    onClose()
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      if (isAdminEmail(user?.email)) {
+        router.push('/admin-dashboard/questions')
+      } else {
+        router.push('/dashboard')
+      }
+      onClose()
+    })
+
+    return () => unsubscribe()
   }, [router, onClose])
 
   return (

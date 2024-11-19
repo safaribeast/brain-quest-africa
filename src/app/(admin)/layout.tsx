@@ -2,21 +2,32 @@
 
 import { redirect } from 'next/navigation'
 import { AdminSidebar } from '@/components/admin/sidebar'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { auth } from '@/lib/firebase/auth'
 import { isAdminEmail } from '@/lib/admin-config'
+import { onAuthStateChanged } from 'firebase/auth'
 
 export default function AdminLayout({
   children,
 }: {
   children: React.ReactNode
 }) {
+  const [isLoading, setIsLoading] = useState(true)
+
   useEffect(() => {
-    const user = auth.currentUser
-    if (!user || !isAdminEmail(user.email)) {
-      redirect('/dashboard')
-    }
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      if (!user || !isAdminEmail(user.email)) {
+        redirect('/dashboard')
+      }
+      setIsLoading(false)
+    })
+
+    return () => unsubscribe()
   }, [])
+
+  if (isLoading) {
+    return <div className="flex h-screen items-center justify-center">Loading...</div>
+  }
 
   return (
     <div className="flex h-screen">
