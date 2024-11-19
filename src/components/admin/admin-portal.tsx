@@ -9,6 +9,7 @@ import { X, Plus } from 'lucide-react'
 import { QuestionList } from "@/components/questions/question-list"
 import { useRouter } from 'next/navigation'
 import { auth } from '@/lib/firebase/auth'
+import { isAdminEmail } from '@/lib/config/admin'
 
 export function AdminPortal({ onClose }: { onClose: () => void }) {
   const [activeTab, setActiveTab] = useState("questions")
@@ -18,7 +19,7 @@ export function AdminPortal({ onClose }: { onClose: () => void }) {
   useEffect(() => {
     // Check if the current user is the admin
     const user = auth.currentUser
-    if (user?.email === 'safaribeast01@gmail.com') {
+    if (isAdminEmail(user?.email)) {
       router.push('/admin-dashboard/questions')
     } else {
       router.push('/dashboard')

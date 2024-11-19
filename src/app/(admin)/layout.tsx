@@ -4,6 +4,7 @@ import { redirect } from 'next/navigation'
 import { AdminSidebar } from '@/components/admin/sidebar'
 import { useEffect } from 'react'
 import { auth } from '@/lib/firebase/auth'
+import { isAdminEmail } from '@/lib/admin-config'
 
 export default function AdminLayout({
   children,
@@ -12,7 +13,7 @@ export default function AdminLayout({
 }) {
   useEffect(() => {
     const user = auth.currentUser
-    if (!user || user.email !== 'safaribeast01@gmail.com') {
+    if (!user || !isAdminEmail(user.email)) {
       redirect('/dashboard')
     }
   }, [])
