@@ -1,48 +1,27 @@
 import { initializeApp, getApps, FirebaseApp } from 'firebase/app';
 import { getFirestore } from 'firebase/firestore';
 
-// Validate required environment variables
-const requiredEnvVars = [
-  'NEXT_PUBLIC_FIREBASE_API_KEY',
-  'NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN',
-  'NEXT_PUBLIC_FIREBASE_PROJECT_ID',
-  'NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET',
-  'NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID',
-  'NEXT_PUBLIC_FIREBASE_APP_ID',
-] as const;
-
-// Check for missing environment variables
-const missingEnvVars = requiredEnvVars.filter(
-  (envVar) => !process.env[envVar]
-);
-
-if (missingEnvVars.length > 0) {
-  throw new Error(
-    `Missing required environment variables: ${missingEnvVars.join(', ')}`
-  );
-}
-
 const firebaseConfig = {
-  apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
-  authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
-  projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
-  storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET,
-  messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
-  appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
+  apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY || "AIzaSyBSx0H2ThQT7XFWvB9jG4n-flypc58z4lU",
+  authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN || "school-quiz-game-5ad8d.firebaseapp.com",
+  projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID || "school-quiz-game-5ad8d",
+  storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET || "school-quiz-game-5ad8d.appspot.com",
+  messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID || "647837416204",
+  appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID || "1:647837416204:web:0a710721b43a54466f2729",
+  databaseURL: process.env.NEXT_PUBLIC_FIREBASE_DATABASE_URL || "https://school-quiz-game-5ad8d-default-rtdb.firebaseio.com/"
 };
-
-// Log Firebase config for debugging (without sensitive data)
-console.log('Firebase initialization with config:', {
-  authDomain: firebaseConfig.authDomain,
-  projectId: firebaseConfig.projectId,
-  storageBucket: firebaseConfig.storageBucket,
-});
 
 // Initialize Firebase
 let firebaseApp: FirebaseApp;
+
 try {
-  firebaseApp = getApps().length === 0 ? initializeApp(firebaseConfig) : getApps()[0];
-  console.log('Firebase initialized successfully');
+  if (!getApps().length) {
+    firebaseApp = initializeApp(firebaseConfig);
+    console.log('Firebase initialized successfully');
+  } else {
+    firebaseApp = getApps()[0];
+    console.log('Firebase already initialized');
+  }
 } catch (error) {
   console.error('Error initializing Firebase:', error);
   throw error;

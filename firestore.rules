@@ -58,7 +58,12 @@ service cloud.firestore {
     // Helper function to check admin status
     function isAdmin() {
       return request.auth != null && 
-             request.auth.token.email in ['safaribeast01@gmail.com'];
+             request.auth.token.email in [
+               'safaribeast01@gmail.com',
+               'muhsinadam38@gmail.com',
+               'charlesnyerere17@gmail.com',
+               'rahimmnaro@gmail.com'
+             ];
     }
   }
 } 
