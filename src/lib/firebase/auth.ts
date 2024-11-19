@@ -1,22 +1,18 @@
-import { getAuth, createUserWithEmailAndPassword } from 'firebase/auth';
+import { getAuth, createUserWithEmailAndPassword, Auth } from 'firebase/auth';
 import { firebaseApp } from './config';
 
-const auth = getAuth(firebaseApp);
+const auth: Auth = getAuth(firebaseApp);
 
 // Function to create the universal admin account
 async function createUniversalAdmin() {
+  const email = 'admin@brainquest.africa';
+  const password = 'BrainQuest@2024';
+
   try {
-    const email = 'admin@brainquest.africa';
-    const password = 'BrainQuest@2024'; // Strong password with mix of characters
-    
     const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-    console.log('Universal admin account created:', userCredential.user.email);
+    console.log('Universal admin created:', userCredential.user);
     return true;
   } catch (error) {
-    if (error.code === 'auth/email-already-in-use') {
-      console.log('Universal admin account already exists');
-      return true;
-    }
     console.error('Error creating universal admin:', error);
     return false;
   }

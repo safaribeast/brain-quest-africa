@@ -1,4 +1,4 @@
-import { initializeApp } from 'firebase/app';
+import { initializeApp, FirebaseApp, getApps } from 'firebase/app';
 import { getFirestore } from 'firebase/firestore';
 
 const firebaseConfig = {
@@ -12,14 +12,14 @@ const firebaseConfig = {
 };
 
 // Initialize Firebase
-let firebaseApp;
+let app: FirebaseApp;
 
 try {
   if (!getApps().length) {
-    firebaseApp = initializeApp(firebaseConfig);
+    app = initializeApp(firebaseConfig);
     console.log('Firebase initialized successfully');
   } else {
-    firebaseApp = getApps()[0];
+    app = getApps()[0];
     console.log('Firebase already initialized');
   }
 } catch (error) {
@@ -27,5 +27,5 @@ try {
   throw error;
 }
 
-export { firebaseApp };
-export const db = getFirestore(firebaseApp);
+export const firebaseApp = app;
+export const db = getFirestore(app);
