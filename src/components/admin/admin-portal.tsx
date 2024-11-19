@@ -9,7 +9,7 @@ import { QuestionList } from "@/components/questions/question-list"
 import { QuestionForm } from "@/components/questions/question-form"
 import { useRouter } from 'next/navigation'
 import { auth } from '@/lib/firebase/auth'
-import { isAdminEmail } from '@/lib/admin-config'
+import { checkAdminAccess } from '@/lib/admin-config'
 import { onAuthStateChanged } from 'firebase/auth'
 
 export function AdminPortal({ onClose }: { onClose: () => void }) {
@@ -20,7 +20,7 @@ export function AdminPortal({ onClose }: { onClose: () => void }) {
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       console.log('Admin portal - Current user:', user?.email)
-      const hasAdminAccess = user && isAdminEmail(user.email)
+      const hasAdminAccess = checkAdminAccess(user?.email)
       console.log('Admin portal - Has admin access:', hasAdminAccess)
 
       if (hasAdminAccess) {

@@ -1,18 +1,11 @@
 import { auth } from '@/lib/firebase/auth';
 import { onAuthStateChanged } from 'firebase/auth';
+import { isAdminEmail } from './admin-config';
 
 export interface User {
   email: string;
   isAdmin: boolean;
 }
-
-// List of admin email addresses
-const ADMIN_EMAILS = [
-  'safaribeast01@gmail.com',
-  'muhsinadam38@gmail.com',
-  'charlesnyerere17@gmail.com',
-  'rahimmnaro@gmail.com'
-];
 
 export async function getCurrentUser(): Promise<User | null> {
   return new Promise((resolve) => {
@@ -26,8 +19,21 @@ export async function getCurrentUser(): Promise<User | null> {
 
       resolve({
         email: user.email || '',
-        isAdmin: user.email ? ADMIN_EMAILS.includes(user.email) : false,
+        isAdmin: isAdminEmail(user.email),
       });
     });
   });
+}
+
+// Helper function to check admin status
+export function checkAdminAccess(email: string | null | undefined): boolean {
+  if (!email) return false;
+  
+  // Convert email to lowercase for case-insensitive comparison
+  const normalizedEmail = email.toLowerCase();
+  
+  // Quick access for development (you can remove this in production)
+  if (normalizedEmail === 'admin@brainquest.africa') return true;
+  
+  return isAdminEmail(email);
 }
