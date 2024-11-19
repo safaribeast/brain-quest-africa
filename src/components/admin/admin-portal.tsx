@@ -1,13 +1,12 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { Dialog, DialogContent } from "@/components/ui/dialog"
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Label } from "@/components/ui/label"
 import { Button } from "@/components/ui/button"
 import { X, Plus } from 'lucide-react'
 import { QuestionList } from "@/components/questions/question-list"
+import { QuestionForm } from "@/components/questions/question-form"
 import { useRouter } from 'next/navigation'
 import { auth } from '@/lib/firebase/auth'
 import { isAdminEmail } from '@/lib/admin-config'
@@ -34,10 +33,10 @@ export function AdminPortal({ onClose }: { onClose: () => void }) {
   return (
     <Dialog open={true} onOpenChange={onClose}>
       <DialogContent className="max-w-[100vw] w-[100vw] h-[100vh] p-0 gap-0 rounded-none bg-background">
-        <div className="flex flex-col h-full">
-          <DialogHeader className="px-4 py-4 border-b shrink-0 bg-background sm:px-6">
-            <div className="flex items-center justify-between">
-              <DialogTitle className="text-xl font-bold text-foreground">Admin Portal</DialogTitle>
+        <div className="flex h-full">
+          <div className="flex-1 p-6">
+            <DialogHeader>
+              <DialogTitle>Admin Portal</DialogTitle>
               <Button
                 variant="ghost"
                 size="icon"
@@ -46,28 +45,16 @@ export function AdminPortal({ onClose }: { onClose: () => void }) {
               >
                 <X className="h-4 w-4" />
               </Button>
-            </div>
-          </DialogHeader>
+            </DialogHeader>
 
-          <Tabs
-            defaultValue="questions"
-            value={activeTab}
-            onValueChange={setActiveTab}
-            className="flex-1 flex flex-col h-full"
-          >
-            <div className="border-b px-4 sm:px-6 shrink-0 bg-background">
-              <TabsList className="h-12">
+            <Tabs defaultValue={activeTab} className="mt-6" onValueChange={setActiveTab}>
+              <TabsList>
                 <TabsTrigger value="questions">Questions</TabsTrigger>
                 <TabsTrigger value="users">Users</TabsTrigger>
                 <TabsTrigger value="settings">Settings</TabsTrigger>
               </TabsList>
-            </div>
 
-            <div className="flex-1 overflow-hidden bg-background/50">
-              <TabsContent 
-                value="questions" 
-                className="h-full p-4 sm:p-6 mt-0"
-              >
+              <TabsContent value="questions" className="mt-6">
                 {showQuestionForm ? (
                   <div className="max-w-4xl mx-auto">
                     <div className="bg-card rounded-lg shadow-sm border">
@@ -107,33 +94,23 @@ export function AdminPortal({ onClose }: { onClose: () => void }) {
                 )}
               </TabsContent>
 
-              <TabsContent 
-                value="users" 
-                className="h-full p-4 sm:p-6 mt-0 overflow-y-auto"
-              >
-                <div className="space-y-4">
-                  <h2 className="text-lg font-semibold text-foreground">User Management</h2>
-                  <div className="bg-card rounded-lg shadow-sm p-4 border">
-                    <p className="text-muted-foreground">User management features coming soon...</p>
-                  </div>
+              <TabsContent value="users" className="mt-6">
+                <h2 className="text-lg font-semibold text-foreground mb-6">User Management</h2>
+                <div className="bg-card rounded-lg shadow-sm p-4 border">
+                  <p className="text-muted-foreground">User management features coming soon...</p>
                 </div>
               </TabsContent>
 
-              <TabsContent 
-                value="settings" 
-                className="h-full p-4 sm:p-6 mt-0 overflow-y-auto"
-              >
-                <div className="space-y-4">
-                  <h2 className="text-lg font-semibold text-foreground">Admin Settings</h2>
-                  <div className="bg-card rounded-lg shadow-sm p-4 border">
-                    <p className="text-muted-foreground">Admin settings features coming soon...</p>
-                  </div>
+              <TabsContent value="settings" className="mt-6">
+                <h2 className="text-lg font-semibold text-foreground mb-6">Admin Settings</h2>
+                <div className="bg-card rounded-lg shadow-sm p-4 border">
+                  <p className="text-muted-foreground">Admin settings features coming soon...</p>
                 </div>
               </TabsContent>
-            </div>
-          </Tabs>
+            </Tabs>
+          </div>
         </div>
       </DialogContent>
     </Dialog>
   )
-} 
+}
