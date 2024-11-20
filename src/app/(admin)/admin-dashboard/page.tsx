@@ -77,12 +77,19 @@ export default function AdminDashboardPage() {
     async function setupListeners() {
       try {
         // Check if user is admin
+        if (!user.email) {
+          console.error('No user email found');
+          toast.error('User email not found');
+          router.push('/dashboard');
+          return;
+        }
+
         const isAdminEmail = user.email === 'safaribeast01@gmail.com';
         const userRef = collection(db, 'users');
         const q = query(userRef, where('email', '==', user.email));
         const userSnap = await getDocs(q);
         
-        const isAdminInDB = !userSnap.empty && userSnap.docs[0].data().isAdmin === true;
+        const isAdminInDB = !userSnap.empty && userSnap.docs[0].data()?.isAdmin === true;
         
         if (!isAdminEmail && !isAdminInDB) {
           console.error('User is not an admin');
