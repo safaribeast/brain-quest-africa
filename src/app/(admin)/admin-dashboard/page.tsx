@@ -3,7 +3,7 @@
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Activity, Users, BookOpen, Award, FileSpreadsheet, TrendingUp, Clock, CheckCircle, XCircle } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { db, auth } from '@/lib/firebase/config';
 import { 
   collection, 
@@ -62,6 +62,159 @@ export default function AdminDashboardPage() {
     error: null
   });
 
+  const setLoading = (loading: boolean) => {
+    setStats(prev => ({ ...prev, loading }));
+  };
+
+  const checkAdminStatus = useCallback(async () => {
+    const user = auth.currentUser;
+    
+    if (!user) {
+      console.error('No user found');
+      toast.error('Please sign in to access admin dashboard');
+      router.push('/dashboard');
+      return;
+    }
+
+    // Store user in a type-safe way
+    const currentUser = user;
+
+    if (!currentUser?.email) {
+      console.error('No user email found');
+      toast.error('User email not found');
+      router.push('/dashboard');
+      return;
+    }
+
+    setLoading(true);
+
+    try {
+      // Check if user is admin
+      const isAdminEmail = currentUser.email === 'safaribeast01@gmail.com';
+      
+      // Query for existing user document
+      const userRef = collection(db, 'users');
+      const q = query(userRef, where('email', '==', currentUser.email));
+      const querySnapshot = await getDocs(q);
+      
+      const isAdminInDB = !querySnapshot.empty && querySnapshot.docs[0].data()?.isAdmin === true;
+      
+      if (!isAdminEmail && !isAdminInDB) {
+        console.error('User is not an admin');
+        toast.error('Access denied. Admin privileges required.');
+        router.push('/dashboard');
+        return;
+      }
+
+      // If user is admin by email but not in DB, add them as admin
+      if (isAdminEmail && !isAdminInDB) {
+        try {
+          await setDoc(doc(db, 'users', currentUser.uid), {
+            email: currentUser.email,
+            isAdmin: true,
+            name: currentUser.displayName || 'Admin User',
+            createdAt: serverTimestamp(),
+            updatedAt: serverTimestamp()
+          }, { merge: true });
+        } catch (error) {
+          console.error('Error setting admin status:', error);
+        }
+      }
+
+      // Set up real-time listeners for questions
+      const questionsRef = collection(db, 'questions');
+      const questionsQuery = query(questionsRef, orderBy('createdAt', 'desc'));
+      
+      const unsubscribeQuestions = onSnapshot(questionsQuery, 
+        (snapshot) => {
+          const questions = snapshot.docs.map(doc => ({
+            id: doc.id,
+            ...doc.data()
+          } as Question));
+
+          const activeQuestions = questions.filter(q => q.status === 'active').length;
+          const draftQuestions = questions.filter(q => q.status === 'draft').length;
+          const recentQuestions = questions.slice(0, 5);
+
+          const subjectDistribution = questions.reduce((acc, q) => {
+            const subject = q.subject || 'Uncategorized';
+            acc[subject] = (acc[subject] || 0) + 1;
+            return acc;
+          }, {} as Record<string, number>);
+
+          setStats(prev => ({
+            ...prev,
+            totalQuestions: questions.length,
+            activeQuestions,
+            draftQuestions,
+            recentQuestions,
+            subjectDistribution,
+            loading: false,
+            error: null
+          }));
+        },
+        (error) => {
+          console.error('Questions listener error:', error);
+          toast.error('Error loading questions data');
+          setStats(prev => ({ ...prev, loading: false, error: 'Error loading questions' }));
+        }
+      );
+
+      // Set up real-time listener for users
+      const usersRef = collection(db, 'users');
+      const unsubscribeUsers = onSnapshot(usersRef, 
+        (snapshot) => {
+          setStats(prev => ({
+            ...prev,
+            totalUsers: snapshot.size,
+            error: null
+          }));
+        },
+        (error) => {
+          console.error('Users listener error:', error);
+          toast.error('Error loading users data');
+        }
+      );
+
+      // Set up real-time listener for activity
+      const activityRef = collection(db, 'activity');
+      const activityQuery = query(activityRef, orderBy('timestamp', 'desc'), limit(5));
+      const unsubscribeActivity = onSnapshot(activityQuery, 
+        (snapshot) => {
+          const activities = snapshot.docs.map(doc => ({
+            id: doc.id,
+            ...doc.data(),
+          }));
+
+          setStats(prev => ({
+            ...prev,
+            recentActivity: activities,
+            loading: false,
+            error: null
+          }));
+        },
+        (error) => {
+          console.error('Activity listener error:', error);
+          toast.error('Error loading activity data');
+        }
+      );
+
+      return () => {
+        unsubscribeQuestions();
+        unsubscribeUsers();
+        unsubscribeActivity();
+      };
+    } catch (error) {
+      console.error('Setup error:', error);
+      setStats(prev => ({ 
+        ...prev, 
+        loading: false, 
+        error: 'Error setting up dashboard' 
+      }));
+      toast.error('Error setting up dashboard');
+    }
+  }, [user, loading, router]);
+
   useEffect(() => {
     if (loading) return;
     
@@ -70,150 +223,7 @@ export default function AdminDashboardPage() {
       return;
     }
 
-    let unsubscribeQuestions: () => void;
-    let unsubscribeUsers: () => void;
-    let unsubscribeActivity: () => void;
-
-    async function setupListeners() {
-      // We know user is defined here because of the check above
-      const currentUser = user;
-
-      try {
-        // Check if user is admin
-        if (!currentUser.email) {
-          console.error('No user email found');
-          toast.error('User email not found');
-          router.push('/dashboard');
-          return;
-        }
-
-        const isAdminEmail = currentUser.email === 'safaribeast01@gmail.com';
-        const userRef = collection(db, 'users');
-        const q = query(userRef, where('email', '==', currentUser.email));
-        const userSnap = await getDocs(q);
-        
-        const isAdminInDB = !userSnap.empty && userSnap.docs[0].data()?.isAdmin === true;
-        
-        if (!isAdminEmail && !isAdminInDB) {
-          console.error('User is not an admin');
-          toast.error('Access denied. Admin privileges required.');
-          router.push('/dashboard');
-          return;
-        }
-
-        // If user is admin by email but not in DB, add them as admin
-        if (isAdminEmail && !isAdminInDB) {
-          try {
-            await setDoc(doc(db, 'users', currentUser.uid), {
-              email: currentUser.email,
-              isAdmin: true,
-              name: currentUser.displayName || 'Admin User',
-              createdAt: serverTimestamp(),
-              updatedAt: serverTimestamp()
-            }, { merge: true });
-          } catch (error) {
-            console.error('Error setting admin status:', error);
-          }
-        }
-
-        // Set up real-time listeners for questions
-        const questionsRef = collection(db, 'questions');
-        const questionsQuery = query(questionsRef, orderBy('createdAt', 'desc'));
-        
-        unsubscribeQuestions = onSnapshot(questionsQuery, 
-          (snapshot) => {
-            const questions = snapshot.docs.map(doc => ({
-              id: doc.id,
-              ...doc.data()
-            } as Question));
-
-            const activeQuestions = questions.filter(q => q.status === 'active').length;
-            const draftQuestions = questions.filter(q => q.status === 'draft').length;
-            const recentQuestions = questions.slice(0, 5);
-
-            const subjectDistribution = questions.reduce((acc, q) => {
-              const subject = q.subject || 'Uncategorized';
-              acc[subject] = (acc[subject] || 0) + 1;
-              return acc;
-            }, {} as Record<string, number>);
-
-            setStats(prev => ({
-              ...prev,
-              totalQuestions: questions.length,
-              activeQuestions,
-              draftQuestions,
-              recentQuestions,
-              subjectDistribution,
-              loading: false,
-              error: null
-            }));
-          },
-          (error) => {
-            console.error('Questions listener error:', error);
-            toast.error('Error loading questions data');
-            setStats(prev => ({ ...prev, loading: false, error: 'Error loading questions' }));
-          }
-        );
-
-        // Set up real-time listener for users
-        const usersRef = collection(db, 'users');
-        unsubscribeUsers = onSnapshot(usersRef, 
-          (snapshot) => {
-            setStats(prev => ({
-              ...prev,
-              totalUsers: snapshot.size,
-              error: null
-            }));
-          },
-          (error) => {
-            console.error('Users listener error:', error);
-            toast.error('Error loading users data');
-          }
-        );
-
-        // Set up real-time listener for activity
-        const activityRef = collection(db, 'activity');
-        const activityQuery = query(activityRef, orderBy('timestamp', 'desc'), limit(5));
-        unsubscribeActivity = onSnapshot(activityQuery, 
-          (snapshot) => {
-            const activities = snapshot.docs.map(doc => ({
-              id: doc.id,
-              ...doc.data(),
-            }));
-
-            setStats(prev => ({
-              ...prev,
-              recentActivity: activities,
-              loading: false,
-              error: null
-            }));
-          },
-          (error) => {
-            console.error('Activity listener error:', error);
-            toast.error('Error loading activity data');
-          }
-        );
-      } catch (error) {
-        console.error('Setup error:', error);
-        setStats(prev => ({ 
-          ...prev, 
-          loading: false, 
-          error: 'Error setting up dashboard' 
-        }));
-        toast.error('Error setting up dashboard');
-      }
-    }
-
-    if (user) {
-      setupListeners();
-    }
-
-    // Cleanup listeners
-    return () => {
-      if (unsubscribeQuestions) unsubscribeQuestions();
-      if (unsubscribeUsers) unsubscribeUsers();
-      if (unsubscribeActivity) unsubscribeActivity();
-    };
+    checkAdminStatus();
   }, [user, loading, router]);
 
   // Show loading state
