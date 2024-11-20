@@ -70,12 +70,22 @@ export default function NewQuestionPage() {
   async function onSubmit(data: QuestionFormValues) {
     setSaving(true);
     try {
+      // Validate required fields
+      if (!data.question || !data.correctAnswer || data.incorrectAnswers.some(answer => !answer)) {
+        toast.error('Please fill in all required fields');
+        return;
+      }
+
+      // Create question document
       const questionsRef = collection(db, 'questions');
       const docRef = await addDoc(questionsRef, {
         ...data,
         createdAt: serverTimestamp(),
         updatedAt: serverTimestamp(),
         createdBy: auth.currentUser?.uid,
+        subject: 'general', // Add default subject
+        topic: 'general',   // Add default topic
+        status: data.status || 'draft'
       });
 
       await logActivity({
@@ -89,7 +99,7 @@ export default function NewQuestionPage() {
       router.push('/admin-dashboard/questions');
     } catch (error) {
       console.error('Error creating question:', error);
-      toast.error('Failed to create question');
+      toast.error('Failed to create question. Please try again.');
     } finally {
       setSaving(false);
     }

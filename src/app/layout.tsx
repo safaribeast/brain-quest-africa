@@ -9,10 +9,15 @@ import { ThemeProvider } from '@/contexts/theme-context';
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Brain Quest Africa",
-  description: "An engaging educational quiz platform designed for African students, featuring diverse topics and interactive learning experiences.",
+  title: "Brain Quest Africa - Epic Knowledge Adventure",
+  description: "Embark on an epic quest through African knowledge! Challenge yourself, earn rewards, and become a champion of wisdom.",
   icons: {
-    icon: "/favicon.ico",
+    icon: [
+      {
+        url: "/favicon.svg",
+        type: "image/svg+xml",
+      }
+    ],
   },
 };
 
@@ -22,8 +27,8 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en">
-      <body className={`${inter.className} game-container`}>
+    <html lang="en" className="dark">
+      <body className={inter.className}>
         <ThemeProvider>
           <ClientLayout>{children}</ClientLayout>
           <Toaster />

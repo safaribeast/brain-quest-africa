@@ -4,7 +4,7 @@ import { buttonVariants } from "@/components/ui/button";
 import { ArrowRight, BookOpen, Brain, Sparkles, Github } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 
-export default function Home() {
+export default function Component() {
   return (
     <div className="flex min-h-screen flex-col">
       {/* Navbar */}
@@ -126,48 +126,95 @@ export default function Home() {
         </div>
       </section>
 
-      {/* CTA Section */}
+      {/* Call to Action Section */}
       <section className="container py-8 md:py-12 lg:py-24">
-        <Card className="relative overflow-hidden border-primary/10">
-          <CardContent className="flex flex-col items-center justify-center space-y-4 p-6 text-center md:p-8">
-            <div className="rounded-full bg-primary/10 p-3">
-              <Sparkles className="h-12 w-12 text-primary" />
-            </div>
-            <h2 className="font-heading text-2xl leading-[1.1] sm:text-3xl md:text-4xl">
-              Ready to Start Your Journey?
-            </h2>
-            <p className="max-w-[85%] leading-normal text-muted-foreground sm:text-lg sm:leading-7">
-              Join thousands of students across Africa who are already improving their knowledge with Brain Quest Africa.
-            </p>
-            <Link
-              href="/register"
-              className={cn(
-                buttonVariants({ size: "lg" }),
-                "bg-gradient-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary"
-              )}
+        <div className="relative overflow-hidden rounded-lg bg-slate-900 px-6 py-16 sm:px-12 sm:py-24 md:p-20">
+          <div className="absolute top-4 right-8">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              className="h-12 w-12 text-yellow-500 animate-pulse"
+              stroke="currentColor"
+              strokeWidth="2"
             >
-              Get Started Now <ArrowRight className="ml-2 h-4 w-4" />
-            </Link>
-          </CardContent>
-        </Card>
+              <path
+                d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"
+                fill="currentColor"
+              />
+            </svg>
+          </div>
+          <div className="relative mx-auto max-w-2xl text-center">
+            <h2 className="font-heading text-3xl tracking-tight text-white sm:text-4xl md:text-5xl">
+              Ready to Start Your Learning Journey?
+            </h2>
+            <p className="mt-6 text-lg leading-8 text-gray-300">
+              Join thousands of students across Africa who are already improving their knowledge with Brain Quest Africa
+            </p>
+            <div className="mt-10 flex justify-center">
+              <Link
+                href="/register"
+                className={cn(
+                  buttonVariants({ size: "lg" }),
+                  "bg-white text-slate-900 hover:bg-gray-100"
+                )}
+              >
+                Get Started Now <ArrowRight className="ml-2 h-4 w-4" />
+              </Link>
+            </div>
+          </div>
+          <div className="absolute -bottom-48 -left-48 opacity-50">
+            <svg
+              viewBox="0 0 558 558"
+              width="558"
+              height="558"
+              fill="none"
+              aria-hidden="true"
+              className="animate-spin-slow"
+            >
+              <defs>
+                <linearGradient
+                  id="gradient"
+                  x1="79"
+                  y1="16"
+                  x2="105"
+                  y2="237"
+                  gradientUnits="userSpaceOnUse"
+                >
+                  <stop stopColor="#fff" />
+                  <stop offset="1" stopColor="#fff" stopOpacity="0" />
+                </linearGradient>
+              </defs>
+              <path
+                opacity=".2"
+                d="M1 279C1 125.465 125.465 1 279 1s278 124.465 278 278-124.465 278-278 278S1 432.535 1 279Z"
+                stroke="#fff"
+              />
+              <path
+                d="M1 279C1 125.465 125.465 1 279 1"
+                stroke="url(#gradient)"
+                strokeLinecap="round"
+              />
+            </svg>
+          </div>
+        </div>
       </section>
 
       {/* Footer */}
-      <footer className="border-t bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-        <div className="container flex flex-col items-center justify-between gap-4 py-10 md:h-24 md:flex-row md:py-0">
+      <footer className="border-t py-6 md:py-0">
+        <div className="container flex flex-col items-center justify-between gap-4 md:h-24 md:flex-row">
           <div className="flex flex-col items-center gap-4 px-8 md:flex-row md:gap-2 md:px-0">
             <p className="text-center text-sm leading-loose text-muted-foreground md:text-left">
-              Built with ❤️ for African students. 2024 Brain Quest Africa. All rights reserved.
+              Built with ❤️ for African students. &copy; 2024 Brain Quest Africa. All rights reserved.
             </p>
           </div>
           <div className="flex items-center space-x-4">
             <Link
-              href="https://github.com/yourusername/brain-quest-africa"
+              href="https://github.com"
               target="_blank"
               rel="noreferrer"
               className={cn(
-                buttonVariants({ variant: "ghost", size: "icon" }),
-                "text-muted-foreground hover:text-foreground"
+                buttonVariants({ variant: "ghost", size: "sm" }),
+                "text-muted-foreground"
               )}
             >
               <Github className="h-4 w-4" />
