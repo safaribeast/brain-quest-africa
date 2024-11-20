@@ -75,18 +75,21 @@ export default function AdminDashboardPage() {
     let unsubscribeActivity: () => void;
 
     async function setupListeners() {
+      // We know user is defined here because of the check above
+      const currentUser = user;
+
       try {
         // Check if user is admin
-        if (!user.email) {
+        if (!currentUser.email) {
           console.error('No user email found');
           toast.error('User email not found');
           router.push('/dashboard');
           return;
         }
 
-        const isAdminEmail = user.email === 'safaribeast01@gmail.com';
+        const isAdminEmail = currentUser.email === 'safaribeast01@gmail.com';
         const userRef = collection(db, 'users');
-        const q = query(userRef, where('email', '==', user.email));
+        const q = query(userRef, where('email', '==', currentUser.email));
         const userSnap = await getDocs(q);
         
         const isAdminInDB = !userSnap.empty && userSnap.docs[0].data()?.isAdmin === true;
@@ -101,10 +104,10 @@ export default function AdminDashboardPage() {
         // If user is admin by email but not in DB, add them as admin
         if (isAdminEmail && !isAdminInDB) {
           try {
-            await setDoc(doc(db, 'users', user.uid), {
-              email: user.email,
+            await setDoc(doc(db, 'users', currentUser.uid), {
+              email: currentUser.email,
               isAdmin: true,
-              name: user.displayName || 'Admin User',
+              name: currentUser.displayName || 'Admin User',
               createdAt: serverTimestamp(),
               updatedAt: serverTimestamp()
             }, { merge: true });
