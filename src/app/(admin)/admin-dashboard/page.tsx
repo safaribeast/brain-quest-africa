@@ -21,7 +21,7 @@ import {
 import { useAuthState } from 'react-firebase-hooks/auth';
 import Link from 'next/link';
 import { Skeleton } from '@/components/ui/skeleton';
-import { Question } from '@/types/question';
+import { Question } from '@/types/questions';
 import { LucideIcon } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
@@ -50,7 +50,17 @@ interface StatCardProps {
 export default function AdminDashboardPage() {
   const [user, loading] = useAuthState(auth);
   const router = useRouter();
-  const [stats, setStats] = useState<DashboardStats>({
+  const [stats, setStats] = useState<{
+    totalQuestions: number;
+    totalUsers: number;
+    activeQuestions: number;
+    draftQuestions: number;
+    recentQuestions: Question[];
+    recentActivity: any[];
+    subjectDistribution: Record<string, number>;
+    loading: boolean;
+    error: string | null;
+  }>({
     totalQuestions: 0,
     totalUsers: 0,
     activeQuestions: 0,
