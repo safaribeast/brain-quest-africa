@@ -1,3 +1,5 @@
+'use client';
+
 import { ReactNode } from "react";
 import { auth } from "@/lib/firebase/config";
 import { useAuthState } from "react-firebase-hooks/auth";
