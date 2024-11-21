@@ -47,6 +47,12 @@ const questionFormSchema = z.object({
   status: z.enum(["active", "draft"], {
     required_error: "Please select a status.",
   }),
+  subject: z.enum(["mathematics", "physics", "chemistry", "geography", "biology", "history", "english", "kiswahili", "commerce", "bookkeeping", "civics"], {
+    required_error: "Please select a subject.",
+  }),
+  form: z.enum(["form1", "form2", "form3", "form4"], {
+    required_error: "Please select a form.",
+  }),
   explanation: z.string().optional(),
 })
 
@@ -56,6 +62,8 @@ const defaultValues: Partial<QuestionFormValues> = {
   difficulty: "medium",
   status: "draft",
   incorrectAnswers: ["", "", ""],
+  subject: "mathematics",
+  form: "form1"
 }
 
 export default function NewQuestionPage() {
@@ -83,8 +91,6 @@ export default function NewQuestionPage() {
         createdAt: serverTimestamp(),
         updatedAt: serverTimestamp(),
         createdBy: auth.currentUser?.uid,
-        subject: 'general', // Add default subject
-        topic: 'general',   // Add default topic
         status: data.status || 'draft'
       });
 
@@ -171,6 +177,63 @@ export default function NewQuestionPage() {
                 )}
               />
             ))}
+
+            <div className="grid grid-cols-2 gap-4">
+              <FormField
+                control={form.control}
+                name="subject"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Subject</FormLabel>
+                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select subject" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        <SelectItem value="mathematics">Mathematics</SelectItem>
+                        <SelectItem value="physics">Physics</SelectItem>
+                        <SelectItem value="chemistry">Chemistry</SelectItem>
+                        <SelectItem value="geography">Geography</SelectItem>
+                        <SelectItem value="biology">Biology</SelectItem>
+                        <SelectItem value="history">History</SelectItem>
+                        <SelectItem value="english">English</SelectItem>
+                        <SelectItem value="kiswahili">Kiswahili</SelectItem>
+                        <SelectItem value="commerce">Commerce</SelectItem>
+                        <SelectItem value="bookkeeping">Bookkeeping</SelectItem>
+                        <SelectItem value="civics">Civics</SelectItem>
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="form"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Form</FormLabel>
+                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select form" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        <SelectItem value="form1">Form 1</SelectItem>
+                        <SelectItem value="form2">Form 2</SelectItem>
+                        <SelectItem value="form3">Form 3</SelectItem>
+                        <SelectItem value="form4">Form 4</SelectItem>
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
 
             <div className="grid grid-cols-2 gap-4">
               <FormField

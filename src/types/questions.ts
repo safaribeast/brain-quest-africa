@@ -4,19 +4,16 @@ export interface Question {
   id: string;
   question: string;
   options: string[];
-  correctOption: number;
+  correctAnswer: string;
   explanation?: string;
   subject: string;
   topic: string;
   difficulty: 'easy' | 'medium' | 'hard';
   status: 'active' | 'draft' | 'archived';
-  createdAt: Timestamp;
-  updatedAt: Timestamp;
+  createdAt: any;
+  updatedAt: any;
   createdBy?: string;
   updatedBy?: string;
-  points?: number;
-  timeLimit?: number;
-  tags?: string[];
 }
 
 export interface QuestionInput {
