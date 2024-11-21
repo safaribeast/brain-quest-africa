@@ -230,8 +230,7 @@ export default function AdminQuestionsPage() {
                 placeholder="Search questions..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-8 w-full"
-                size="sm"
+                className="pl-8 w-full h-9"
               />
             </div>
           </div>
