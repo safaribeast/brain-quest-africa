@@ -78,7 +78,7 @@ export default function AdminDashboardPage() {
             Manage your quiz platform and monitor activity.
           </p>
         </div>
-        <Button asChild variant="primary" className="bg-blue-600 hover:bg-blue-700">
+        <Button asChild variant="default" className="bg-blue-600 hover:bg-blue-700">
           <Link href="/admin-dashboard/questions/new" className="flex items-center gap-2">
             <Plus className="h-5 w-5" />
             New Question
@@ -208,4 +208,3 @@ export default function AdminDashboardPage() {
     </div>
   );
 }
-
