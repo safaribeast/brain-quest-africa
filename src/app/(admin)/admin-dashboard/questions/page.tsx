@@ -34,6 +34,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { BulkEditDialog } from '@/components/questions/bulk-edit-dialog';
 
 interface Question {
   id: string;
@@ -58,6 +59,7 @@ export default function AdminQuestionsPage() {
     form: 'all',
     subject: 'all'
   });
+  const [isBulkEditOpen, setIsBulkEditOpen] = useState(false);
 
   useEffect(() => {
     fetchQuestions();
@@ -205,6 +207,16 @@ export default function AdminQuestionsPage() {
           </p>
         </div>
         <div className="flex flex-wrap gap-2 w-full sm:w-auto">
+          <Button 
+            variant="outline" 
+            className="flex-1 sm:flex-none justify-center" 
+            size="sm"
+            disabled={selectedQuestions.length === 0}
+            onClick={() => setIsBulkEditOpen(true)}
+          >
+            <Pencil className="w-4 h-4 mr-2" />
+            Bulk Edit
+          </Button>
           <Button asChild variant="outline" className="flex-1 sm:flex-none justify-center" size="sm">
             <Link href="/admin-dashboard/questions/upload">
               <FileSpreadsheet className="w-4 h-4 mr-2" />
@@ -349,9 +361,9 @@ export default function AdminQuestionsPage() {
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead className="w-[40px] pl-3">
-                    <Checkbox
-                      checked={selectedQuestions.length === questions.length}
+                  <TableHead className="w-12">
+                    <Checkbox 
+                      checked={selectedQuestions.length === questions.length && questions.length > 0}
                       onCheckedChange={(checked) => {
                         if (checked) {
                           setSelectedQuestions(questions.map(q => q.id));
@@ -361,12 +373,12 @@ export default function AdminQuestionsPage() {
                       }}
                     />
                   </TableHead>
-                  <TableHead className="min-w-[200px]">Question</TableHead>
-                  <TableHead className="w-[80px]">Form</TableHead>
-                  <TableHead className="w-[100px]">Subject</TableHead>
-                  <TableHead className="w-[90px]">Difficulty</TableHead>
-                  <TableHead className="w-[80px]">Status</TableHead>
-                  <TableHead className="w-[100px] text-right pr-3">Actions</TableHead>
+                  <TableHead>Question</TableHead>
+                  <TableHead>Subject</TableHead>
+                  <TableHead>Form</TableHead>
+                  <TableHead>Difficulty</TableHead>
+                  <TableHead>Status</TableHead>
+                  <TableHead className="text-right">Actions</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -379,14 +391,14 @@ export default function AdminQuestionsPage() {
                 ) : (
                   questions.map((question) => (
                     <TableRow key={question.id}>
-                      <TableCell className="pl-3">
-                        <Checkbox
+                      <TableCell>
+                        <Checkbox 
                           checked={selectedQuestions.includes(question.id)}
                           onCheckedChange={(checked) => {
                             if (checked) {
-                              setSelectedQuestions(prev => [...prev, question.id]);
+                              setSelectedQuestions([...selectedQuestions, question.id]);
                             } else {
-                              setSelectedQuestions(prev => prev.filter(id => id !== question.id));
+                              setSelectedQuestions(selectedQuestions.filter(id => id !== question.id));
                             }
                           }}
                         />
@@ -399,11 +411,11 @@ export default function AdminQuestionsPage() {
                           </p>
                         </div>
                       </TableCell>
-                      <TableCell className="text-sm">
-                        {question.form?.replace('form', 'F') || 'N/A'}
-                      </TableCell>
                       <TableCell className="text-sm capitalize">
                         {question.subject || 'N/A'}
+                      </TableCell>
+                      <TableCell className="text-sm">
+                        {question.form?.replace('form', 'F') || 'N/A'}
                       </TableCell>
                       <TableCell>
                         <span className={`inline-flex items-center px-1.5 py-0.5 rounded-full text-xs font-medium ${
@@ -423,7 +435,7 @@ export default function AdminQuestionsPage() {
                           {question.status}
                         </span>
                       </TableCell>
-                      <TableCell className="text-right pr-3">
+                      <TableCell className="text-right">
                         <div className="flex items-center justify-end gap-1">
                           <Button
                             variant="ghost"
@@ -469,6 +481,17 @@ export default function AdminQuestionsPage() {
           </div>
         )}
       </Card>
+
+      <BulkEditDialog
+        isOpen={isBulkEditOpen}
+        onClose={() => setIsBulkEditOpen(false)}
+        selectedQuestions={selectedQuestions}
+        onSuccess={() => {
+          setSelectedQuestions([]);
+          setIsBulkEditOpen(false);
+          fetchQuestions();
+        }}
+      />
     </div>
   );
 }
