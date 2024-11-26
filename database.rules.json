@@ -1,0 +1,46 @@
+{
+  "rules": {
+    ".read": "auth != null",
+    ".write": "auth != null",
+    "matchmaking": {
+      "queue": {
+        ".read": "auth != null",
+        ".write": "auth != null",
+        "$queueId": {
+          ".read": "auth != null",
+          ".write": "auth != null",
+          ".validate": "newData.hasChildren(['userId', 'settings', 'timestamp', 'status'])"
+        }
+      },
+      "matches": {
+        "$matchId": {
+          ".read": "auth != null",
+          ".write": "auth != null",
+          "players": {
+            "$playerId": {
+              ".read": "auth != null",
+              ".write": "auth != null"
+            }
+          }
+        }
+      }
+    },
+    "matches": {
+      ".read": "auth != null",
+      ".write": "auth != null",
+      "$matchId": {
+        ".read": "auth != null",
+        ".write": "auth != null"
+      }
+    },
+    "online_players": {
+      ".read": "auth != null",
+      ".write": "auth != null",
+      "$userId": {
+        ".read": "auth != null",
+        ".write": "auth != null && ($userId === auth.uid || data.child('status').val() === 'searching')",
+        ".validate": "newData.hasChildren(['userId', 'displayName', 'status', 'lastActive'])"
+      }
+    }
+  }
+}
