@@ -34,7 +34,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { BulkEditDialog } from '@/components/questions/bulk-edit-dialog';
 
 interface Question {
   id: string;
@@ -59,7 +58,6 @@ export default function AdminQuestionsPage() {
     form: 'all',
     subject: 'all'
   });
-  const [showBulkEdit, setShowBulkEdit] = useState(false);
 
   useEffect(() => {
     fetchQuestions();
@@ -193,22 +191,6 @@ export default function AdminQuestionsPage() {
     } catch (error) {
       console.error('Error updating questions:', error);
       toast.error('Failed to update questions');
-    }
-  };
-
-  const handleSelectAll = (checked: boolean) => {
-    if (checked) {
-      setSelectedQuestions(questions.map(q => q.id));
-    } else {
-      setSelectedQuestions([]);
-    }
-  };
-
-  const handleSelectQuestion = (questionId: string, checked: boolean) => {
-    if (checked) {
-      setSelectedQuestions(prev => [...prev, questionId]);
-    } else {
-      setSelectedQuestions(prev => prev.filter(id => id !== questionId));
     }
   };
 
@@ -349,13 +331,6 @@ export default function AdminQuestionsPage() {
               >
                 Delete
               </Button>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => setShowBulkEdit(true)}
-              >
-                Edit Selected
-              </Button>
             </div>
           </div>
         </Card>
@@ -377,7 +352,13 @@ export default function AdminQuestionsPage() {
                   <TableHead className="w-[40px] pl-3">
                     <Checkbox
                       checked={selectedQuestions.length === questions.length}
-                      onCheckedChange={handleSelectAll}
+                      onCheckedChange={(checked) => {
+                        if (checked) {
+                          setSelectedQuestions(questions.map(q => q.id));
+                        } else {
+                          setSelectedQuestions([]);
+                        }
+                      }}
                     />
                   </TableHead>
                   <TableHead className="min-w-[200px]">Question</TableHead>
@@ -401,9 +382,13 @@ export default function AdminQuestionsPage() {
                       <TableCell className="pl-3">
                         <Checkbox
                           checked={selectedQuestions.includes(question.id)}
-                          onCheckedChange={(checked) => 
-                            handleSelectQuestion(question.id, checked as boolean)
-                          }
+                          onCheckedChange={(checked) => {
+                            if (checked) {
+                              setSelectedQuestions(prev => [...prev, question.id]);
+                            } else {
+                              setSelectedQuestions(prev => prev.filter(id => id !== question.id));
+                            }
+                          }}
                         />
                       </TableCell>
                       <TableCell>
@@ -484,17 +469,6 @@ export default function AdminQuestionsPage() {
           </div>
         )}
       </Card>
-
-      {/* Bulk Edit Dialog */}
-      <BulkEditDialog
-        isOpen={showBulkEdit}
-        onClose={() => setShowBulkEdit(false)}
-        selectedQuestions={selectedQuestions}
-        onSuccess={() => {
-          setSelectedQuestions([]);
-          fetchQuestions();
-        }}
-      />
     </div>
   );
 }

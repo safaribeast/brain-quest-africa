@@ -34,7 +34,8 @@ export function BulkQuestionUpload() {
     const template = [
       {
         subject: 'Mathematics',
-        form: 'Form 1',
+        topic: 'Algebra',
+        subtopic: 'Linear Equations',
         difficulty: 'Medium',
         question: 'Solve for x: 2x + 3 = 7',
         correctAnswer: '2',
@@ -43,6 +44,7 @@ export function BulkQuestionUpload() {
         option3: '3',
         option4: '4',
         explanation: 'Subtract 3 from both sides: 2x = 4, then divide by 2: x = 2',
+        tags: 'algebra,equations,linear',
       },
     ];
 
@@ -53,7 +55,8 @@ export function BulkQuestionUpload() {
     // Add validation and formatting
     ws['!cols'] = [
       { width: 15 }, // subject
-      { width: 15 }, // form
+      { width: 15 }, // topic
+      { width: 15 }, // subtopic
       { width: 10 }, // difficulty
       { width: 40 }, // question
       { width: 15 }, // correctAnswer
@@ -62,6 +65,7 @@ export function BulkQuestionUpload() {
       { width: 15 }, // option3
       { width: 15 }, // option4
       { width: 40 }, // explanation
+      { width: 20 }, // tags
     ];
 
     XLSX.utils.book_append_sheet(wb, ws, 'Questions Template');

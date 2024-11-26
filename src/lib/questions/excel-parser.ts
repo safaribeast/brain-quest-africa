@@ -4,7 +4,8 @@ import { z } from 'zod';
 // Define the schema for question data
 const QuestionSchema = z.object({
   subject: z.string().min(1, 'Subject is required'),
-  form: z.string().min(1, 'Form is required'),
+  topic: z.string().min(1, 'Topic is required'),
+  subtopic: z.string().optional(),
   difficulty: z.enum(['Easy', 'Medium', 'Hard']).default('Medium'),
   question: z.string().min(1, 'Question is required'),
   correctAnswer: z.string().min(1, 'Correct answer is required'),
@@ -13,6 +14,7 @@ const QuestionSchema = z.object({
   option3: z.string().min(1, 'Option 3 is required'),
   option4: z.string().min(1, 'Option 4 is required'),
   explanation: z.string().optional(),
+  tags: z.string().optional(),
 });
 
 export type QuestionInput = z.infer<typeof QuestionSchema>;
@@ -34,7 +36,8 @@ export class ExcelParser {
     const template = [
       {
         subject: 'Mathematics',
-        form: 'Form 1',
+        topic: 'Algebra',
+        subtopic: 'Linear Equations',
         difficulty: 'Medium',
         question: 'Solve for x: 2x + 3 = 7',
         correctAnswer: '2',
@@ -43,6 +46,7 @@ export class ExcelParser {
         option3: '3',
         option4: '4',
         explanation: 'Subtract 3 from both sides: 2x = 4, then divide by 2: x = 2',
+        tags: 'algebra,equations,linear',
       },
     ];
 
@@ -52,7 +56,8 @@ export class ExcelParser {
     // Add column widths
     ws['!cols'] = [
       { width: 15 }, // subject
-      { width: 15 }, // form
+      { width: 15 }, // topic
+      { width: 15 }, // subtopic
       { width: 10 }, // difficulty
       { width: 40 }, // question
       { width: 15 }, // correctAnswer
@@ -61,6 +66,7 @@ export class ExcelParser {
       { width: 15 }, // option3
       { width: 15 }, // option4
       { width: 40 }, // explanation
+      { width: 20 }, // tags
     ];
 
     XLSX.utils.book_append_sheet(wb, ws, 'Questions Template');
@@ -149,7 +155,8 @@ export class ExcelParser {
   static formatQuestionForDatabase(question: QuestionInput) {
     return {
       subject: question.subject,
-      form: question.form,
+      topic: question.topic,
+      subtopic: question.subtopic || '',
       difficulty: question.difficulty,
       question: question.question,
       options: [
@@ -160,6 +167,7 @@ export class ExcelParser {
       ],
       correctAnswer: question.correctAnswer,
       explanation: question.explanation || '',
+      tags: question.tags ? question.tags.split(',').map((tag) => tag.trim()) : [],
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
     };
